@@ -332,7 +332,7 @@ _NODISCARD ShowModeSign myCalc::getBtnShowType(void) const
 	}
 	else
 	{
-		return (ShowModeSign)_PUBINFO_ERROR;
+		return _cove_type(_PUBINFO_ERROR, ShowModeSign);
 	}
 }
 
@@ -397,7 +397,7 @@ _NODISCARD bool myCalc::handleNumSign(void)
 
 	if (info->Num.front() != '-')
 	{
-		info->Num = '-' + info->Num;
+		info->Num.push_front('-');
 	}
 	else
 	{
