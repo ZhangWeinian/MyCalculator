@@ -202,6 +202,8 @@ public:
 
 	bool charMode = false; // 是否进入字符模式
 
+	bool haveDecimal = false; // 有小数点时，标准数字处理只执行一次
+
 	/*--Fun--*/
 	_NORETURN ImportantFlag(void) = default;
 
@@ -212,6 +214,7 @@ public:
 		numSignFlag = true;
 		numGetOverFlag = true;
 		dPointFlag = false;
+		haveDecimal = false;
 
 		if (_Sign == ClearSign::_All)
 		{

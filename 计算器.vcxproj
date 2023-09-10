@@ -106,6 +106,7 @@
     <ClCompile Include="myCalc_part1.cpp" />
     <None Include="..\.clang-format" />
     <None Include="cpp.hint" />
+    <None Include="README.md" />
     <None Include="计算器.ico" />
     <ResourceCompile Include="计算器.rc" />
     <ClInclude Include="HighPrecisionOperations.h" />

@@ -30,7 +30,7 @@
 #include <boost/multiprecision/number.hpp>
 
 // 基础功能初始化
-_NORETURN void myCalc::initUI(void)
+void myCalc::initUI(void)
 {
 	// 显示初始化
 	showMode(ShowModeSign::_Basic);
@@ -43,7 +43,7 @@ _NORETURN void myCalc::initUI(void)
 }
 
 // 数据初始化
-_NORETURN void myCalc::initData(void)
+void myCalc::initData(void)
 {
 	info = _init_uptr(BasicInformation);
 	flag = _init_uptr(ImportantFlag);
@@ -51,7 +51,7 @@ _NORETURN void myCalc::initData(void)
 }
 
 // 函数初始化
-_NORETURN void myCalc::initFun(void)
+void myCalc::initFun(void)
 {
 	// 找到所有按钮，放到一个组里
 	for (auto& btn : findChildren<QPushButton*>())
@@ -71,7 +71,7 @@ _NORETURN void myCalc::initFun(void)
 }
 
 // 控制三个特殊位置的显示
-_NORETURN void myCalc::showMode(const ShowModeSign& _Sign)
+void myCalc::showMode(const ShowModeSign& _Sign)
 {
 	switch (_Sign)
 	{
@@ -130,7 +130,7 @@ _NORETURN void myCalc::showMode(const ShowModeSign& _Sign)
 }
 
 // 判断基础操作符
-_NODISCARD bool myCalc::isBasicOper(const _qstr& BasicOperEvent) const
+bool myCalc::isBasicOper(const _qstr& BasicOperEvent) const
 {
 	if (BasicOperEvent.isEmpty())
 	{
@@ -144,7 +144,7 @@ _NODISCARD bool myCalc::isBasicOper(const _qstr& BasicOperEvent) const
 }
 
 // 判断高级操作符
-_NODISCARD bool myCalc::isAdvancedOper(const _qstr& AdvancedOperEvent) const
+bool myCalc::isAdvancedOper(const _qstr& AdvancedOperEvent) const
 {
 	if (AdvancedOperEvent.isEmpty())
 	{
@@ -159,7 +159,7 @@ _NODISCARD bool myCalc::isAdvancedOper(const _qstr& AdvancedOperEvent) const
 }
 
 // 判断数字
-_NODISCARD bool myCalc::isNum(const _qstr& NumEvent) const
+bool myCalc::isNum(const _qstr& NumEvent) const
 {
 	auto funTmp = [&](const auto& i)
 	{
@@ -181,7 +181,7 @@ _NODISCARD bool myCalc::isNum(const _qstr& NumEvent) const
 }
 
 // 判断控制符
-_NODISCARD bool myCalc::isCtrl(const _qstr& CtrlEvent) const
+bool myCalc::isCtrl(const _qstr& CtrlEvent) const
 {
 	if (CtrlEvent.isEmpty())
 	{
@@ -194,14 +194,14 @@ _NODISCARD bool myCalc::isCtrl(const _qstr& CtrlEvent) const
 }
 
 // 判断来自键盘的事件是否应该响应
-_NODISCARD bool myCalc::isCorresponding(const int QtKey) const
+bool myCalc::isCorresponding(const int QtKey) const
 {
 	return _STD any_of(
 		TheCorrespondingStr.begin(), TheCorrespondingStr.end(), [&QtKey](const auto& i) { return QtKey == i.first; });
 }
 
 // 获取键盘事件转换后的文本
-_NODISCARD _qstr myCalc::getCorrespondingStr(const int StrKey) const
+_qstr myCalc::getCorrespondingStr(const int StrKey) const
 {
 	_qstr ans = "";
 
@@ -219,7 +219,7 @@ _NODISCARD _qstr myCalc::getCorrespondingStr(const int StrKey) const
 }
 
 // 获取键盘事件转换后的数字
-_NODISCARD _qstr myCalc::getCorrespondingNum(const int NumKey) const
+_qstr myCalc::getCorrespondingNum(const int NumKey) const
 {
 	_qstr ans = "";
 
@@ -237,7 +237,7 @@ _NODISCARD _qstr myCalc::getCorrespondingNum(const int NumKey) const
 }
 
 // 识别按钮类型
-_NODISCARD BtnType myCalc::getBtnType(const _qstr& BtnEvent) const
+BtnType myCalc::getBtnType(const _qstr& BtnEvent) const
 {
 	try
 	{
@@ -280,7 +280,7 @@ _NODISCARD BtnType myCalc::getBtnType(const _qstr& BtnEvent) const
 }
 
 // 识别控制类型
-_NODISCARD CtrlType myCalc::getCtrlType(const _qstr& CtrlEvent) const
+CtrlType myCalc::getCtrlType(const _qstr& CtrlEvent) const
 {
 	try
 	{
@@ -316,7 +316,7 @@ _NODISCARD CtrlType myCalc::getCtrlType(const _qstr& CtrlEvent) const
 }
 
 // 识别显示类型
-_NODISCARD ShowModeSign myCalc::getBtnShowType(void) const
+ShowModeSign myCalc::getBtnShowType(void) const
 {
 	if (ui.btn1->text() == "( )")
 	{
@@ -337,7 +337,7 @@ _NODISCARD ShowModeSign myCalc::getBtnShowType(void) const
 }
 
 // 获取运算符优先级
-_NODISCARD bool myCalc::getPriority(const _qstr& Oper1, const _qstr& Oper2) const
+bool myCalc::getPriority(const _qstr& Oper1, const _qstr& Oper2) const
 {
 	Type priOper1 = 0;
 	Type priOper2 = 0;
@@ -358,7 +358,7 @@ _NODISCARD bool myCalc::getPriority(const _qstr& Oper1, const _qstr& Oper2) cons
 }
 
 // 处理括号
-_NORETURN void myCalc::handleBkEvent(const _qstr& BkEvent)
+void myCalc::handleBkEvent(const _qstr& BkEvent)
 {
 	if (auto tmp_BK = (BkEvent == "( )") ? "(" : BkEvent; tmp_BK == "(")
 	{
@@ -383,7 +383,7 @@ _NORETURN void myCalc::handleBkEvent(const _qstr& BkEvent)
 }
 
 // 处理数字正负号
-_NODISCARD bool myCalc::handleNumSign(void)
+bool myCalc::handleNumSign(void)
 {
 	if (info->Num == "0") // 不对0作正负号调整
 	{
@@ -408,7 +408,7 @@ _NODISCARD bool myCalc::handleNumSign(void)
 }
 
 // 处理delete建
-_NORETURN void myCalc::handleDelete(void)
+void myCalc::handleDelete(void)
 {
 	if (info->lastTimeEvent->second == BtnType::_AdvancedOper)
 	{
@@ -425,6 +425,7 @@ _NORETURN void myCalc::handleDelete(void)
 			if (ui.line2->text().back() == '.')
 			{
 				flag->dPointFlag = false;
+				flag->haveDecimal = false;
 			}
 
 			ui.line2->backspace();
@@ -473,7 +474,7 @@ void myCalc::basicOperPushStack(const _qstr& BasicOperEvent)
 }
 
 // 计算高级操作符表达式
-_NODISCARD _qstr myCalc::calcAdvancedOperData(const _qstr& Data, const _qstr& Oper) const
+_qstr myCalc::calcAdvancedOperData(const _qstr& Data, const _qstr& Oper) const
 {
 	_FLOAT numAns = 0.0L;
 	auto numTmp = _cove_type(getFloat(Data), _FLOAT);
@@ -556,7 +557,7 @@ _NODISCARD _qstr myCalc::calcAdvancedOperData(const _qstr& Data, const _qstr& Op
 }
 
 // 获取阶乘
-_NODISCARD _FLOAT myCalc::getFactorial(const _qstr& Data) const
+_FLOAT myCalc::getFactorial(const _qstr& Data) const
 {
 	auto num = _cove_type(getFloat(Data), _INT);
 	LL ans = 1LL;
@@ -585,7 +586,7 @@ _NODISCARD _FLOAT myCalc::getFactorial(const _qstr& Data) const
 }
 
 // 获取当前显示在输入栏中的文本
-_NODISCARD _qstr myCalc::getDisplayingStr(void) const
+_qstr myCalc::getDisplayingStr(void) const
 {
 	return ui.line2->text();
 }
@@ -595,51 +596,56 @@ void myCalc::formatDisplaying(const _qstr& Num)
 {
 	_qstr ShowStr = Num.isEmpty() ? getDisplayingStr() : Num;
 
-	bool haveNumSign = false;
-	bool haveDecimal = false;
-	_qstr decimal = "";
-
-	if (ShowStr.front() == '-')
+	if (!flag->haveDecimal)
 	{
-		pop_front(ShowStr);
-		haveNumSign = true;
-	}
-	if (auto i = ShowStr.indexOf('.'); i != -1)
-	{
-		decimal = ShowStr.mid(i);
-		ShowStr = ShowStr.left(i);
-		haveDecimal = true;
-	}
+		bool haveNumSign = false;
+		bool haveDecimal = false;
+		_qstr decimal = "";
 
-	if (ShowStr.size() >= 4)
-	{
-		auto tmp = clearCommas(ShowStr);
-
-		ShowStr = reverse_qstr(tmp);
-
-		auto len = tmp.size();
-		for (auto i = 3, j = 0; i < len; i += 3, j++)
+		if (ShowStr.front() == '-')
 		{
-			ShowStr.insert(i + j, ',');
+			pop_front(ShowStr);
+			haveNumSign = true;
+		}
+		if (auto i = ShowStr.indexOf('.'); !flag->haveDecimal && i != -1)
+		{
+			decimal = ShowStr.mid(i);
+			ShowStr = ShowStr.left(i);
+
+			haveDecimal = true;
+			flag->haveDecimal = true;
 		}
 
-		ShowStr = reverse_qstr(ShowStr);
-	}
+		if (ShowStr.size() >= 4)
+		{
+			auto tmp = clearCommas(ShowStr);
 
-	if (haveNumSign)
-	{
-		ShowStr = "-" + ShowStr;
-	}
-	if (haveDecimal)
-	{
-		ShowStr = ShowStr + decimal;
+			ShowStr = reverse_qstr(tmp);
+
+			auto len = tmp.size();
+			for (auto i = 3, j = 0; i < len; i += 3, j++)
+			{
+				ShowStr.insert(i + j, ',');
+			}
+
+			ShowStr = reverse_qstr(ShowStr);
+		}
+
+		if (haveNumSign)
+		{
+			ShowStr = "-" + ShowStr;
+		}
+		if (haveDecimal)
+		{
+			ShowStr = ShowStr + decimal;
+		}
 	}
 
 	ui.line2->setText(ShowStr);
 }
 
 // 清理数字中的逗号
-_NODISCARD _qstr myCalc::clearCommas(const _qstr& Str) const
+_qstr myCalc::clearCommas(const _qstr& Str) const
 {
 	_qstr ans = "";
 	for (const auto& i : Str)
@@ -654,7 +660,7 @@ _NODISCARD _qstr myCalc::clearCommas(const _qstr& Str) const
 }
 
 // 配合 C/CE，清除内容
-_NORETURN void myCalc::clear(const ClearSign& _Sign)
+void myCalc::clear(const ClearSign& _Sign)
 {
 	clearLastAdvancedStr();
 
@@ -670,7 +676,7 @@ _NORETURN void myCalc::clear(const ClearSign& _Sign)
 }
 
 // 清除最后一个高级操作符表达式
-_NORETURN void myCalc::clearLastAdvancedStr(void)
+void myCalc::clearLastAdvancedStr(void)
 {
 	info->lastAdvancedOperStr.clear();
 	info->Num.clear();
@@ -682,7 +688,7 @@ _NORETURN void myCalc::clearLastAdvancedStr(void)
 }
 
 // 配合基础操作符，进行简单计算
-_NODISCARD _qstr myCalc::simpleCalc(const _FLOAT& OperNum2, const _qstr& OperSymbol, const _FLOAT& OperNum1) const
+_qstr myCalc::simpleCalc(const _FLOAT& OperNum2, const _qstr& OperSymbol, const _FLOAT& OperNum1) const
 {
 	_FLOAT ansNum = 0.0L;
 
@@ -728,7 +734,7 @@ _NODISCARD _qstr myCalc::simpleCalc(const _FLOAT& OperNum2, const _qstr& OperSym
 }
 
 // 配合高级操作符，更新显示文本
-_NODISCARD bool myCalc::updataZhongZhuiStr(void)
+bool myCalc::updataZhongZhuiStr(void)
 {
 	auto [begin, end] = findBracketStr(_NeedPosition);
 
@@ -744,7 +750,7 @@ _NODISCARD bool myCalc::updataZhongZhuiStr(void)
 }
 
 // 寻找最小括号表达式位置
-_NODISCARD BKPosition myCalc::findBracketStr(const BKPosition&)
+BKPosition myCalc::findBracketStr(const BKPosition&)
 {
 	size_t strB = info->ZhongZhuiStr.size() - 1;
 	size_t strE = strB - 1;
@@ -794,7 +800,7 @@ _NODISCARD BKPosition myCalc::findBracketStr(const BKPosition&)
 }
 
 // 配合计算，获取栈顶数字
-_NODISCARD _FLOAT myCalc::getOperNum(_def_sk_qstr& OperSk)
+_FLOAT myCalc::getOperNum(_def_sk_qstr& OperSk)
 {
 	if (OperSk.isEmpty())
 	{
@@ -818,7 +824,7 @@ _NODISCARD _FLOAT myCalc::getOperNum(_def_sk_qstr& OperSk)
 }
 
 // 防止重复记录
-_NODISCARD bool myCalc::dontDuplicateRecord(const ClickEvent& Event) const
+bool myCalc::dontDuplicateRecord(const ClickEvent& Event) const
 {
 	if (Event != *info->lastTimeEvent)
 	{
@@ -853,7 +859,7 @@ void myCalc::setLine2Displaying(void)
 }
 
 // 预处理
-_NORETURN void myCalc::Preprocessing(const ClickEvent& Event)
+void myCalc::Preprocessing(const ClickEvent& Event)
 {
 	// 预处理1：若已经完成一次完整的计算，则清除之前的信息
 	if (flag->calcFlag)

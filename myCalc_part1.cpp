@@ -21,7 +21,7 @@
 #include <cstdlib>
 
 // 0.1 初始化
-_NORETURN myCalc::myCalc(QWidget* parent): QWidget(parent)
+myCalc::myCalc(QWidget* parent): QWidget(parent)
 {
 	ui.setupUi(this);
 
@@ -29,10 +29,10 @@ _NORETURN myCalc::myCalc(QWidget* parent): QWidget(parent)
 }
 
 // 0.2 析构
-_NORETURN myCalc::~myCalc(void) = default;
+myCalc::~myCalc(void) = default;
 
 // 1.1 监听鼠标点击的事件
-_NORETURN void myCalc::onButtonGroupCliked(const QAbstractButton* Btn)
+void myCalc::onButtonGroupCliked(const QAbstractButton* Btn)
 {
 	// 通过鼠标点击屏幕获得的的内容和类型
 	auto text = Btn->text();
@@ -46,7 +46,7 @@ _NORETURN void myCalc::onButtonGroupCliked(const QAbstractButton* Btn)
 }
 
 // 1.2 监听键盘点击（结束）事件
-_NORETURN void myCalc::keyReleaseEvent(QKeyEvent* KeyEvent)
+void myCalc::keyReleaseEvent(QKeyEvent* KeyEvent)
 {
 	if (!KeyEvent->isAutoRepeat()) // 不听取持续事件
 	{
@@ -73,7 +73,7 @@ _NORETURN void myCalc::keyReleaseEvent(QKeyEvent* KeyEvent)
 }
 
 // 1.3 部分键盘文本转换
-_NODISCARD _qstr myCalc::getKeyboardText(const QKeyEvent* KeyEvent)
+_qstr myCalc::getKeyboardText(const QKeyEvent* KeyEvent)
 {
 	_qstr ans = "";
 
@@ -94,13 +94,13 @@ _NODISCARD _qstr myCalc::getKeyboardText(const QKeyEvent* KeyEvent)
 }
 
 // 1.3 为了处理异常自主添加的事件
-_NORETURN void myCalc::onInspectionStr(const ClickEvent& AddEvent)
+void myCalc::onInspectionStr(const ClickEvent& AddEvent)
 {
 	handleEvent(AddEvent);
 }
 
 // 2.1 输入时检查是否合理
-_NORETURN void myCalc::inspectionStr_InputTime(const ClickEvent& ThisTimeEvent)
+void myCalc::inspectionStr_InputTime(const ClickEvent& ThisTimeEvent)
 {
 	bool pass = true;
 	bool tmp = true;
@@ -165,7 +165,7 @@ _NORETURN void myCalc::inspectionStr_InputTime(const ClickEvent& ThisTimeEvent)
 }
 
 // 2.2 正式处理点击事件
-_NORETURN void myCalc::handleEvent(const ClickEvent& Event)
+void myCalc::handleEvent(const ClickEvent& Event)
 {
 	// 预处理
 	Preprocessing(Event);
@@ -302,7 +302,7 @@ void myCalc::handleBasicOper(const _qstr& BasicOperEvent)
 }
 
 // 2.5 处理高级操作符
-_NORETURN void myCalc::handleAdvancedOper(const _qstr& AdvancedOperEvent)
+void myCalc::handleAdvancedOper(const _qstr& AdvancedOperEvent)
 {
 	// 此部分的操作符需要直接计算答案，故保证有一个数字被记录
 	if ((info->lastTimeEvent->second == BtnType::_AdvancedOper || info->lastTimeEvent->first == ")") &&
@@ -340,7 +340,7 @@ _NORETURN void myCalc::handleAdvancedOper(const _qstr& AdvancedOperEvent)
 }
 
 // 2.6 处理控制符
-_NORETURN void myCalc::handleCtrl(const CtrlType& _Type)
+void myCalc::handleCtrl(const CtrlType& _Type)
 {
 	switch (_Type)
 	{
@@ -462,7 +462,7 @@ void myCalc::takeData(_qstr& Data, const BtnType& _Type, bool ClearData)
 }
 
 // 4.1 最终计算前进行简单检查
-_NORETURN void myCalc::inspectionStr_FinallyCalc(void)
+void myCalc::inspectionStr_FinallyCalc(void)
 {
 	// case1：缺少最后的右括号
 	if (flag->bkFlag >= 1 && flag->bkFlag <= 5)
@@ -475,7 +475,7 @@ _NORETURN void myCalc::inspectionStr_FinallyCalc(void)
 }
 
 // 4.2 获取一个高级操作符表达式
-_NODISCARD _qstr myCalc::getAdvancedStr(const _qstr& Event, const _qstr& keyNum) const
+_qstr myCalc::getAdvancedStr(const _qstr& Event, const _qstr& keyNum) const
 {
 	_qstr showStr = "";
 
@@ -504,7 +504,7 @@ _NODISCARD _qstr myCalc::getAdvancedStr(const _qstr& Event, const _qstr& keyNum)
 }
 
 // 4.3 获取整个表达式的计算结果
-_NODISCARD _qstr myCalc::calcStr(void)
+_qstr myCalc::calcStr(void)
 {
 	while (!info->CalcStack.isEmpty())
 	{
@@ -515,7 +515,7 @@ _NODISCARD _qstr myCalc::calcStr(void)
 }
 
 // 4.4 获取指定表达式的计算结果
-_NODISCARD _qstr myCalc::calcStr(_def_vec_qstr& NumsVec, _def_sk_qstr& OperSk)
+_qstr myCalc::calcStr(_def_vec_qstr& NumsVec, _def_sk_qstr& OperSk)
 {
 	try
 	{
@@ -619,7 +619,7 @@ void myCalc::calcBracketStr(void)
 }
 
 // 5.1 显示结果
-_NORETURN void myCalc::showInfo(const ClickEvent& Event)
+void myCalc::showInfo(const ClickEvent& Event)
 {
 	switch (Event.second)
 	{

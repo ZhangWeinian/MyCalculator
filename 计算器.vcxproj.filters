@@ -75,6 +75,7 @@
     <None Include="..\.clang-format">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="LICENSE.txt" />

@@ -107,7 +107,7 @@ private:
 	_NORETURN void showInfo(const ClickEvent& Event);
 
 	// 标准数字显示
-	void formatDisplaying(const _qstr& Num = "");
+	_NORETURN void formatDisplaying(const _qstr& Num = "");
 
 	// 清理数字中的逗号
 	_NODISCARD _qstr clearCommas(const _qstr& Str) const;
