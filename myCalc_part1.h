@@ -290,7 +290,7 @@ _NODISCARD inline _qstr getQstr(const _FLOAT& Num)
 }
 
 // _qstr 转 _FLOAT
-_NODISCARD inline _FLOAT getFloat(const _qstr& Str)
+_NODISCARD inline _FLOAT getFloat(_con_qstr& Str)
 {
 #if defined(_myFLOAT)
 	return _cove_type(Str.toStdString(), _FLOAT);
