@@ -16,6 +16,7 @@
 #include <memory>
 #include <limits.h>
 #include <type_traits>
+#include <functional>
 
 // 按钮类型枚举
 const enum class BtnType: Type
@@ -203,6 +204,7 @@ public:
 	bool charMode = false; // 是否进入字符模式
 
 	bool haveDecimal = false; // 有小数点时，标准数字处理只执行一次
+	bool getLastAns = false;  // 是否已经到了获取最终答案的时刻
 
 	/*--Fun--*/
 	_NORETURN ImportantFlag(void) = default;
@@ -228,6 +230,8 @@ public:
 			calcStackEmpty = false;
 
 			charMode = false;
+
+			getLastAns = false;
 		}
 	}
 };
@@ -328,10 +332,10 @@ _NORETURN inline void pop_back_front(_qstr& Str)
 }
 
 // _qstr 反转
-_NODISCARD inline _qstr reverse_qstr(_qstr& Str)
+_NORETURN inline void reverse_qstr(_qstr& Str)
 {
 	_qstr ans = "";
 	_STD for_each(Str.rbegin(), Str.rend(), [&ans](const auto& i) { ans += i; });
 
-	return ans;
+	Str = _STD move(ans);
 }

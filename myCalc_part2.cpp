@@ -594,9 +594,9 @@ _qstr myCalc::getDisplayingStr(void) const
 // 标准数字显示
 void myCalc::formatDisplaying(_con_qstr& Num)
 {
-	_qstr ShowStr = Num.isEmpty() ? getDisplayingStr() : Num;
+	auto ShowStr = Num.isEmpty() ? getDisplayingStr() : Num;
 
-	if (!flag->haveDecimal)
+	if (!flag->haveDecimal || flag->getLastAns)
 	{
 		bool haveNumSign = false;
 		bool haveDecimal = false;
@@ -607,7 +607,7 @@ void myCalc::formatDisplaying(_con_qstr& Num)
 			pop_front(ShowStr);
 			haveNumSign = true;
 		}
-		if (auto i = ShowStr.indexOf('.'); !flag->haveDecimal && i != -1)
+		if (auto i = ShowStr.indexOf('.'); i != -1)
 		{
 			decimal = ShowStr.mid(i);
 			ShowStr = ShowStr.left(i);
@@ -618,17 +618,16 @@ void myCalc::formatDisplaying(_con_qstr& Num)
 
 		if (ShowStr.size() >= 4)
 		{
-			auto tmp = clearCommas(ShowStr);
+			ShowStr = clearCommas(ShowStr);
+			reverse_qstr(ShowStr);
 
-			ShowStr = reverse_qstr(tmp);
-
-			auto len = tmp.size();
+			auto len = ShowStr.size();
 			for (auto i = 3, j = 0; i < len; i += 3, j++)
 			{
 				ShowStr.insert(i + j, ',');
 			}
 
-			ShowStr = reverse_qstr(ShowStr);
+			reverse_qstr(ShowStr);
 		}
 
 		if (haveNumSign)
@@ -637,7 +636,7 @@ void myCalc::formatDisplaying(_con_qstr& Num)
 		}
 		if (haveDecimal)
 		{
-			ShowStr = ShowStr + decimal;
+			ShowStr += decimal;
 		}
 	}
 
