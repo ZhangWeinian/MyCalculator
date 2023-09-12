@@ -325,6 +325,7 @@ void myCalc::handleAdvancedOper(_con_qstr& AdvancedOperEvent)
 	flag->numSignFlag = true;
 	flag->dPointFlag = false;
 	flag->numGetOverFlag = true;
+	flag->haveDecimal = false;
 
 	// 计算
 	info->Num = calcAdvancedOperData(info->Num, AdvancedOperEvent);
@@ -379,11 +380,13 @@ void myCalc::handleCtrl(const CtrlType& _Type)
 			inspectionStr_FinallyCalc();
 
 			takeData(info->Num, BtnType::_Num);
+
 			info->Num = calcStr();
 
 			info->lastAns = info->Num;
 
 			flag->calcFlag = true;
+			flag->getLastAns = true;
 
 			break;
 		}
@@ -725,7 +728,7 @@ void myCalc::showAdvancedOperInfo(const ClickEvent& Event)
 		return;
 	}
 
-	_qstr showStr = getAdvancedStr(Event.first, keyNum);
+	auto showStr = getAdvancedStr(Event.first, keyNum);
 
 	if (!showStr.isEmpty())
 	{
