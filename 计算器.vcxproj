@@ -109,7 +109,7 @@
     <QtMoc Include="myCalc_part2.h" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="myCalc_part1.cpp" />
-    <None Include="..\.clang-format" />
+    <None Include="..\..\.clang-format" />
     <None Include="cpp.hint" />
     <None Include="README.md" />
     <None Include="计算器.ico" />

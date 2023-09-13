@@ -137,6 +137,13 @@ void myCalc::inspectionStr_InputTime(const ClickEvent& ThisTimeEvent)
 		pass = false;
 	}
 
+	// case5：点击基础操作符后直接按等号
+	if (tmp && ThisTimeEvent.first == "=" && info->lastTimeEvent->second == BtnType::_BasicOper)
+	{
+		takeData(info->Symbol, BtnType::_BasicOper);
+		takeData(getDisplayingStr(), BtnType::_Num);
+	}
+	
 	// case5：监听字符模式
 	if (ThisTimeEvent.first == "#")
 	{

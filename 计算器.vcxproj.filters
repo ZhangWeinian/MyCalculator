@@ -72,10 +72,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
-    <None Include="..\.clang-format">
-      <Filter>Header Files</Filter>
-    </None>
     <None Include="README.md" />
+    <None Include="..\..\.clang-format" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="LICENSE.txt" />
