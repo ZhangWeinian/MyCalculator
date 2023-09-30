@@ -1,24 +1,22 @@
 #pragma once
 
-#include "stdafx.h"
-
 #include "myCalc.h"
+#include "stdafx.h"
 #include <ui_myCalc.h>
 
-#include <qlist.h>
-#include <qstack.h>
-#include <qstring.h>
-#include <qevent.h>
+#include <cstdlib>
+#include <memory>
 #include <qabstractbutton.h>
+#include <qevent.h>
 #include <qlabel.h>
 #include <qlineedit.h>
-#include <qwidget.h>
+#include <qlist.h>
 #include <qmessagebox.h>
-
+#include <qstack.h>
+#include <qstring.h>
+#include <qwidget.h>
 #include <utility>
-#include <memory>
 #include <version>
-#include <cstdlib>
 
 // 0.1 初始化
 myCalc::myCalc(QWidget* parent): QWidget(parent)
@@ -39,7 +37,7 @@ void myCalc::onButtonGroupCliked(const QAbstractButton* Btn)
 	auto type = getBtnType(text);
 
 	flag->fromKeyboard = false;
-	flag->fromClick = true;
+	flag->fromClick	   = true;
 
 	// 处理事件
 	inspectionStr_InputTime(_def_pair(text, type));
@@ -59,7 +57,7 @@ void myCalc::keyReleaseEvent(QKeyEvent* KeyEvent)
 			if (auto type = getBtnType(text); type != BtnType::_TypeErr)
 			{
 				flag->fromKeyboard = true;
-				flag->fromClick = false;
+				flag->fromClick	   = false;
 
 				inspectionStr_InputTime(_def_pair(text, type));
 			}
@@ -103,13 +101,13 @@ void myCalc::onInspectionStr(const ClickEvent& AddEvent)
 void myCalc::inspectionStr_InputTime(const ClickEvent& ThisTimeEvent)
 {
 	bool pass = true;
-	bool tmp = true;
+	bool tmp  = true;
 
 	// case1：防止重复输入
 	if (!dontDuplicateRecord(ThisTimeEvent))
 	{
 		pass = false;
-		tmp = false;
+		tmp	 = false;
 	}
 
 	// case2：检查输入的数字是否过大
@@ -119,7 +117,7 @@ void myCalc::inspectionStr_InputTime(const ClickEvent& ThisTimeEvent)
 		ui.line2->setText("输入的数字过大");
 
 		pass = false;
-		tmp = false;
+		tmp	 = false;
 	}
 
 	// case3：在左括号与数字之间添加一个乘号
@@ -143,7 +141,7 @@ void myCalc::inspectionStr_InputTime(const ClickEvent& ThisTimeEvent)
 		takeData(info->Symbol, BtnType::_BasicOper);
 		takeData(getDisplayingStr(), BtnType::_Num);
 	}
-	
+
 	// case5：监听字符模式
 	if (ThisTimeEvent.first == "#")
 	{
@@ -226,19 +224,19 @@ void myCalc::handleNum(_con_qstr& NumEvent)
 	// 标识符更新。其中，数字正负号调整是否结束不做要求
 	if (!flag->operFlag)
 	{
-		flag->operFlag = true; // 运算符调整结束，可以记录
+		flag->operFlag = true;						 // 运算符调整结束，可以记录
 
 		info->Num.clear();							 // 清理之前存储的数字
 		takeData(info->Symbol, BtnType::_BasicOper); // 记录运算符
 	}
-	flag->numGetOverFlag = false; // 未获取到一个完整的数字
+	flag->numGetOverFlag = false;					 // 未获取到一个完整的数字
 
 	// 记录事件内容
 	if (NumEvent == ".")
 	{
 		if (!flag->dPointFlag)
 		{
-			flag->dPointFlag = true;
+			flag->dPointFlag									   = true;
 			(info->Num = (info->Num.isEmpty() ? "0" : info->Num)) += NumEvent;
 		}
 
@@ -276,19 +274,19 @@ void myCalc::handleBasicOper(_con_qstr& BasicOperEvent)
 	}
 
 	// 标识符更新
-	else if (!flag->numGetOverFlag) // 除正负号调整，点击其他基础操作符，均意味着：
+	else if (!flag->numGetOverFlag)	  // 除正负号调整，点击其他基础操作符，均意味着：
 	{
-		flag->numGetOverFlag = true; // 1，已经获取到一个完整的数字，可以记录
-		flag->numSignFlag = true;	 // 2，完成了一次正负号调整
-		flag->dPointFlag = false;	 // 3，小数点标识符重置
+		flag->numGetOverFlag = true;  // 1，已经获取到一个完整的数字，可以记录
+		flag->numSignFlag	 = true;  // 2，完成了一次正负号调整
+		flag->dPointFlag	 = false; // 3，小数点标识符重置
 
 		// 记录数字
 		takeData(info->Num, BtnType::_Num);
 	}
 	else if (info->lastTimeEvent->second == BtnType::_AdvancedOper)
 	{
-		flag->numSignFlag = true; // 完成了一次正负号调整
-		flag->dPointFlag = false; // 小数点标识符重置
+		flag->numSignFlag = true;  // 完成了一次正负号调整
+		flag->dPointFlag  = false; // 小数点标识符重置
 	}
 
 	// 括号处理
@@ -329,10 +327,10 @@ void myCalc::handleAdvancedOper(_con_qstr& AdvancedOperEvent)
 	}
 
 	// 标识符更新
-	flag->numSignFlag = true;
-	flag->dPointFlag = false;
+	flag->numSignFlag	 = true;
+	flag->dPointFlag	 = false;
 	flag->numGetOverFlag = true;
-	flag->haveDecimal = false;
+	flag->haveDecimal	 = false;
 
 	// 计算
 	info->Num = calcAdvancedOperData(info->Num, AdvancedOperEvent);
@@ -392,7 +390,7 @@ void myCalc::handleCtrl(const CtrlType& _Type)
 
 			info->lastAns = info->Num;
 
-			flag->calcFlag = true;
+			flag->calcFlag	 = true;
 			flag->getLastAns = true;
 
 			break;
@@ -534,7 +532,7 @@ _qstr myCalc::calcStr(_def_vec_qstr& NumsVec, _def_sk_qstr& OperSk)
 			throw StackErrCode::_Stack_Empty;
 		}
 
-		for (auto& i : NumsVec)
+		for (auto& i: NumsVec)
 		{
 			if (isNum(i))
 			{
@@ -713,8 +711,8 @@ void myCalc::showInfo(const ClickEvent& Event)
 // 5.2 显示高级操作符所得结果
 void myCalc::showAdvancedOperInfo(const ClickEvent& Event)
 {
-	_qstr keyNum = "";
-	bool rightBK = false;
+	_qstr keyNum  = "";
+	bool  rightBK = false;
 
 	if (info->lastTimeEvent->second == BtnType::_AdvancedOper)
 	{
@@ -723,7 +721,7 @@ void myCalc::showAdvancedOperInfo(const ClickEvent& Event)
 	else if (info->lastTimeEvent->first == ")")
 	{
 		rightBK = true;
-		keyNum = ui.line2->text();
+		keyNum	= ui.line2->text();
 	}
 	else
 	{
