@@ -1,33 +1,30 @@
 #pragma once
 
-#include "stdafx.h"
-
 #include "./myCalc.h"
-#include <ui_myCalc.h>
-
-#include <algorithm>
-#include <memory>
-#include <utility>
-#include <version>
-#include <cmath>
-
-#include <qchar.h>
-#include <qlist.h>
-#include <qobject.h>
-#include <qstack.h>
-#include <qstring.h>
-#include <qabstractbutton.h>
-#include <qbuttongroup.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qpushbutton.h>
-#include <qwidget.h>
-#include <qnamespace.h>
-
+#include "stdafx.h"
 #include <boost/multiprecision/detail/default_ops.hpp>
 #include <boost/multiprecision/detail/et_ops.hpp>
 #include <boost/multiprecision/detail/number_compare.hpp>
 #include <boost/multiprecision/number.hpp>
+#include <ui_myCalc.h>
+
+#include <algorithm>
+#include <cmath>
+#include <memory>
+#include <qabstractbutton.h>
+#include <qbuttongroup.h>
+#include <qchar.h>
+#include <qlabel.h>
+#include <qlineedit.h>
+#include <qlist.h>
+#include <qnamespace.h>
+#include <qobject.h>
+#include <qpushbutton.h>
+#include <qstack.h>
+#include <qstring.h>
+#include <qwidget.h>
+#include <utility>
+#include <version>
 
 // 基础功能初始化
 void myCalc::initUI(void)
@@ -45,8 +42,8 @@ void myCalc::initUI(void)
 // 数据初始化
 void myCalc::initData(void)
 {
-	info = _init_uptr(BasicInformation);
-	flag = _init_uptr(ImportantFlag);
+	info		= _init_uptr(BasicInformation);
+	flag		= _init_uptr(ImportantFlag);
 	buttonGroup = _init_uptr(QButtonGroup, this);
 }
 
@@ -54,7 +51,7 @@ void myCalc::initData(void)
 void myCalc::initFun(void)
 {
 	// 找到所有按钮，放到一个组里
-	for (auto& btn : findChildren<QPushButton*>())
+	for (auto& btn: findChildren<QPushButton*>())
 	{
 		buttonGroup->addButton(btn);
 	}
@@ -138,8 +135,9 @@ bool myCalc::isBasicOper(_con_qstr& BasicOperEvent) const
 	}
 	else
 	{
-		return _STD any_of(
-			TheBasicOper.begin(), TheBasicOper.end(), [&BasicOperEvent](const auto& i) { return i == BasicOperEvent; });
+		return _STD any_of(TheBasicOper.begin(),
+						   TheBasicOper.end(),
+						   [&BasicOperEvent](const auto& i) { return i == BasicOperEvent; });
 	}
 }
 
@@ -196,8 +194,9 @@ bool myCalc::isCtrl(_con_qstr& CtrlEvent) const
 // 判断来自键盘的事件是否应该响应
 bool myCalc::isCorresponding(const int QtKey) const
 {
-	return _STD any_of(
-		TheCorrespondingStr.begin(), TheCorrespondingStr.end(), [&QtKey](const auto& i) { return QtKey == i.first; });
+	return _STD any_of(TheCorrespondingStr.begin(),
+					   TheCorrespondingStr.end(),
+					   [&QtKey](const auto& i) { return QtKey == i.first; });
 }
 
 // 获取键盘事件转换后的文本
@@ -342,7 +341,7 @@ bool myCalc::getPriority(_con_qstr& Oper1, _con_qstr& Oper2) const
 	Type priOper1 = 0;
 	Type priOper2 = 0;
 
-	for (const auto& [first, second] : ThePriority)
+	for (const auto& [first, second]: ThePriority)
 	{
 		if (first == Oper1)
 		{
@@ -424,7 +423,7 @@ void myCalc::handleDelete(void)
 		{
 			if (ui.line2->text().back() == '.')
 			{
-				flag->dPointFlag = false;
+				flag->dPointFlag  = false;
 				flag->haveDecimal = false;
 			}
 
@@ -477,7 +476,7 @@ void myCalc::basicOperPushStack(_con_qstr& BasicOperEvent)
 _qstr myCalc::calcAdvancedOperData(_con_qstr& Data, _con_qstr& Oper) const
 {
 	_FLOAT numAns = 0.0L;
-	auto numTmp = _cove_type(getFloat(Data), _FLOAT);
+	auto   numTmp = _cove_type(getFloat(Data), _FLOAT);
 
 	try
 	{
@@ -560,7 +559,7 @@ _qstr myCalc::calcAdvancedOperData(_con_qstr& Data, _con_qstr& Oper) const
 _FLOAT myCalc::getFactorial(_con_qstr& Data) const
 {
 	auto num = _cove_type(getFloat(Data), _INT);
-	LL ans = 1LL;
+	LL	 ans = 1LL;
 
 	if (num < 0)
 	{
@@ -598,9 +597,9 @@ void myCalc::formatDisplaying(_con_qstr& Num)
 
 	if (!flag->haveDecimal || flag->getLastAns)
 	{
-		bool haveNumSign = false;
-		bool haveDecimal = false;
-		_qstr decimal = "";
+		bool  haveNumSign = false;
+		bool  haveDecimal = false;
+		_qstr decimal	  = "";
 
 		if (ShowStr.front() == '-')
 		{
@@ -612,7 +611,7 @@ void myCalc::formatDisplaying(_con_qstr& Num)
 			decimal = ShowStr.mid(i);
 			ShowStr = ShowStr.left(i);
 
-			haveDecimal = true;
+			haveDecimal		  = true;
 			flag->haveDecimal = true;
 		}
 
@@ -647,7 +646,7 @@ void myCalc::formatDisplaying(_con_qstr& Num)
 _qstr myCalc::clearCommas(_con_qstr& Str) const
 {
 	_qstr ans = "";
-	for (const auto& i : Str)
+	for (const auto& i: Str)
 	{
 		if (i != ',')
 		{
@@ -751,10 +750,10 @@ bool myCalc::updataZhongZhuiStr(void)
 // 寻找最小括号表达式位置
 BKPosition myCalc::findBracketStr(const BKPosition&)
 {
-	size_t strB = info->ZhongZhuiStr.size() - 1;
-	size_t strE = strB - 1;
+	size_t strB	  = info->ZhongZhuiStr.size() - 1;
+	size_t strE	  = strB - 1;
 	size_t bkNums = 0;
-	size_t tmp = strB;
+	size_t tmp	  = strB;
 
 	try
 	{
@@ -868,7 +867,7 @@ void myCalc::Preprocessing(const ClickEvent& Event)
 		if (Event.second != BtnType::_Num)
 		{
 			flag->numGetOverFlag = false;
-			info->Num = info->lastAns;
+			info->Num			 = info->lastAns;
 		}
 	}
 

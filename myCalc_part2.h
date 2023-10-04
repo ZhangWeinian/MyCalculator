@@ -1,25 +1,26 @@
 #pragma once
 
-#include "stdafx.h"
-
 #include "./myCalc_part1.h"
+#include "stdafx.h"
 #include <ui_myCalc.h>
 
-#include <qbuttongroup.h>
-#include <qwidget.h>
-#include <qtmetamacros.h>
 #include <qabstractbutton.h>
+#include <qbuttongroup.h>
 #include <qevent.h>
+#include <qtmetamacros.h>
+#include <qwidget.h>
 
 class myCalc: public QWidget
 {
 	Q_OBJECT
 
 public:
+
 	_NORETURN myCalc(QWidget* parent = nullptr);
 	_NORETURN ~myCalc(void);
 
 private:
+
 	/*--Data--*/
 	Ui::myCalcClass ui;
 
@@ -53,8 +54,8 @@ private:
 	_NODISCARD bool isCorresponding(const int QtKey) const;
 
 	// 分别返回事件、控制操作符、当前显示内容的类型
-	_NODISCARD BtnType getBtnType(_con_qstr& BtnEvent) const;
-	_NODISCARD CtrlType getCtrlType(_con_qstr& CtrlEvent) const;
+	_NODISCARD BtnType		getBtnType(_con_qstr& BtnEvent) const;
+	_NODISCARD CtrlType		getCtrlType(_con_qstr& CtrlEvent) const;
 	_NODISCARD ShowModeSign getBtnShowType(void) const;
 
 	// 获取键盘事件转换后的文本或数字
@@ -65,8 +66,8 @@ private:
 	_NODISCARD bool getPriority(_con_qstr& Oper1, _con_qstr& Oper2) const;
 
 	// 分别处理数字、基础操作符、高级操作符、括号、控制符、删除键
-	void handleNum(_con_qstr& NumEvent);
-	void handleBasicOper(_con_qstr& BasicOperEvent);
+	void		   handleNum(_con_qstr& NumEvent);
+	void		   handleBasicOper(_con_qstr& BasicOperEvent);
 	_NORETURN void handleAdvancedOper(_con_qstr& AdvancedOperEvent);
 	_NORETURN void handleBkEvent(_con_qstr& BkEvent);
 	_NORETURN void handleCtrl(const CtrlType& _Type);
@@ -125,8 +126,8 @@ private:
 	_NODISCARD BKPosition findBracketStr(const BKPosition&);
 
 	// 记录数据、清除数据
-	void takeData(_qstr&& Data, const BtnType& _Type, bool ClearData = true);
-	void takeData(_qstr& Data, const BtnType& _Type, bool ClearData = true);
+	void		   takeData(_qstr&& Data, const BtnType& _Type, bool ClearData = true);
+	void		   takeData(_qstr& Data, const BtnType& _Type, bool ClearData = true);
 	_NORETURN void clear(const ClearSign& _Sign);
 	_NORETURN void clearLastAdvancedStr(void);
 

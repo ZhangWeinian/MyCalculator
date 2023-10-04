@@ -1,15 +1,14 @@
 #pragma once
 
-#include "stdafx.h"
 #include "./HighPrecisionOperations.h"
+#include "stdafx.h"
 
+#include <limits.h>
 #include <qcontainerfwd.h>
 #include <qstack.h>
 #include <qstring.h>
-
-#include <version>
-#include <limits.h>
 #include <string>
+#include <version>
 
 
 
@@ -53,7 +52,7 @@ using Sign = unsigned _int16;
 #if defined(_myINT)
 using _INT = _myINT;
 #else
-using _INT = _int64;
+using _INT	 = _int64;
 #endif
 
 
@@ -64,16 +63,16 @@ using _FLOAT = long double;
 #endif
 
 
-using _str = _STD string;
-using _qstr = QString;
-using _con_qstr = const QString;
+using _str		 = _STD string;
+using _qstr		 = QString;
+using _con_qstr	 = const QString;
 using BKPosition = QPair<size_t, size_t>;
 
 
-#define _def_sk(data_type) QStack<data_type>
-#define _def_sk_qstr _def_sk(_qstr)
+#define _def_sk(data_type)	QStack<data_type>
+#define _def_sk_qstr		_def_sk(_qstr)
 #define _def_vec(data_type) QVector<data_type>
-#define _def_vec_qstr _def_vec(_qstr)
+#define _def_vec_qstr		_def_vec(_qstr)
 
 
 constexpr Type _PUBINFO_ERROR = USHRT_MAX;
@@ -85,15 +84,10 @@ constexpr LL _NUM_MIN = LLONG_MIN;
 
 
 #define _def_uptr(PtrType) _STD unique_ptr<PtrType>
-#define _def_uptr_ce() _STD unique_ptr<ClickEvent>
+#define _def_uptr_ce()	   _STD unique_ptr<ClickEvent>
 
-#define _def_pair(type1, type2) _STD make_pair(type1, type2)
-
+#define _def_pair(type1, type2)	 _STD make_pair(type1, type2)
 #define _make_Pair(type1, type2) _STD pair<type1, type2>
-
-#define _init_type(init_content, init_type) _cove_type(init_content, init_type)
-#define _init_uptr(CE_Type, ...) _STD make_unique<CE_Type>(##__VA_ARGS__)
-#define _init_uptr_ce(...) _STD make_unique<ClickEvent>(##__VA_ARGS__)
 
 #define _cove_ushort(num) static_cast<unsigned short>(num)
 
@@ -102,3 +96,7 @@ constexpr LL _NUM_MIN = LLONG_MIN;
 #else
 	#define _cove_type(content, type) _BOOST lexical_cast<type>(content)
 #endif // !_myFLOAT
+
+#define _init_type(init_content, init_type) _cove_type(init_content, init_type)
+#define _init_uptr(CE_Type, ...)			_STD make_unique<CE_Type>(##__VA_ARGS__)
+#define _init_uptr_ce(...)					_STD make_unique<ClickEvent>(##__VA_ARGS__)
