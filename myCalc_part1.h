@@ -83,16 +83,16 @@ constexpr BKPosition _NeedPosition = BKPosition(USHRT_MAX, USHRT_MAX);
 constexpr int _NeedBasicOperNums = -1;
 
 // 预定义所有基础操作符
-const _def_vec_qstr TheBasicOper { "+", "-", "×", "*", "÷", "/", "( )", "(", ")", "±" };
+const _def_qvec() TheBasicOper { "+", "-", "×", "*", "÷", "/", "( )", "(", ")", "±" };
 
 // 预定义所有高级操作符
-const _def_vec_qstr TheAdvancedOper { "1/x", "x²", "√x", "%", "!", "^" };
+const _def_qvec() TheAdvancedOper { "1/x", "x²", "√x", "%", "!", "^" };
 
 // 预定义所有数字
 const _def_vec(QChar) TheNums { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.' };
 
 // 预定于所有控制符
-const _def_vec_qstr TheCtrl { "CE", "C", "DEL", "=", "EXIT", "#" };
+const _def_qvec() TheCtrl { "CE", "C", "DEL", "=", "EXIT", "#" };
 
 // 预定义运算符优先级
 const _def_vec(_make_Pair(_qstr, Type)) ThePriority { _def_pair("+", 0), _def_pair("-", 0), _def_pair("*", 1),
@@ -146,8 +146,8 @@ public:
 	_qstr lastAdvancedOperStr = "";					// 上一次的高级运算符表达式
 	_qstr lastAdvancedOper	  = "";					// 上一个高级算符
 
-	_def_vec_qstr HouZhui	= {};					// 后缀表达式
-	_def_sk_qstr  CalcStack = {};					// 操作栈
+	_def_qvec() HouZhui	 = {};						// 后缀表达式
+	_def_qsk() CalcStack = {};						// 操作栈
 
 	_qstr ZhongZhuiStr = "";						// 中缀表达式（字符串）
 
@@ -267,15 +267,9 @@ _NODISCARD inline bool operator!=(const BtnType num1, Type num2)
 }
 
 // _FLOAT 转 _qstr
-_NODISCARD inline _qstr getQstr(const _FLOAT& Num)
+_NODISCARD inline _qstr getQstr(const FLOAT& Num)
 {
-	_str tmp = "";
-
-#if defined(_myFLOAT)
-	tmp = _cove_type(Num, _STD string);
-#else
-	tmp = _STD	to_string(Num);
-#endif
+	_str tmp = _STD to_string(Num);
 
 	if (auto dpoint = tmp.find('.'); dpoint != -1)
 	{
@@ -294,13 +288,9 @@ _NODISCARD inline _qstr getQstr(const _FLOAT& Num)
 }
 
 // _qstr 转 _FLOAT
-_NODISCARD inline _FLOAT getFloat(const _qstr& Str)
+_NODISCARD inline FLOAT getFloat(const _qstr& Str)
 {
-#if defined(_myFLOAT)
-	return _cove_type(Str.toStdString(), _FLOAT);
-#else
 	return _STD stold(Str.toStdString());
-#endif
 }
 
 // 删除 _qstr 的最后一个字符（如果是汉字，则删除最后一个汉字）
@@ -334,8 +324,8 @@ _NORETURN inline void pop_back_front(_qstr& Str)
 // _qstr 反转
 _NORETURN inline void reverse_qstr(_qstr& Str)
 {
-	_qstr ans = "";
-	_STD  for_each(Str.rbegin(), Str.rend(), [&ans](const auto& i) { ans += i; });
+	_qstr  ans = "";
+	_RANGE for_each(Str, [&ans](const auto& i) { ans += i; });
 
 	Str = _STD move(ans);
 }

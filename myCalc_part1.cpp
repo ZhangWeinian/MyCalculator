@@ -180,27 +180,29 @@ void myCalc::handleEvent(const ClickEvent& Event)
 	// 按类处理事件
 	switch (Event.second)
 	{
-		case BtnType::_Num:
+		using enum BtnType;
+
+		case _Num:
 		{
 			handleNum(Event.first);
 			break;
 		}
 
-		case BtnType::_BasicOper:
-		case BtnType::_LeftBK:
-		case BtnType::_RightBK:
+		case _BasicOper:
+		case _LeftBK:
+		case _RightBK:
 		{
 			handleBasicOper(Event.first);
 			break;
 		}
 
-		case BtnType::_AdvancedOper:
+		case _AdvancedOper:
 		{
 			handleAdvancedOper(Event.first);
 			break;
 		}
 
-		case BtnType::_Ctrl:
+		case _Ctrl:
 		{
 			handleCtrl(getCtrlType(Event.first));
 			break;
@@ -422,7 +424,9 @@ void myCalc::takeData(_qstr&& Data, const BtnType& _Type, bool ClearData)
 
 	switch (_Type)
 	{
-		case BtnType::_Num:
+		using enum BtnType;
+
+		case _Num:
 		{
 			info->ZhongZhuiStr += (Data + " ");
 			info->HouZhui.emplace_back(Data);
@@ -430,15 +434,15 @@ void myCalc::takeData(_qstr&& Data, const BtnType& _Type, bool ClearData)
 			break;
 		}
 
-		case BtnType::_AdvancedOper:
+		case _AdvancedOper:
 		{
 			info->HouZhui.emplace_back(info->Num);
 			break;
 		}
 
-		case BtnType::_BasicOper:
-		case BtnType::_LeftBK:
-		case BtnType::_RightBK:
+		case _BasicOper:
+		case _LeftBK:
+		case _RightBK:
 		{
 			info->ZhongZhuiStr += (Data + " ");
 			basicOperPushStack(Data);
@@ -446,7 +450,7 @@ void myCalc::takeData(_qstr&& Data, const BtnType& _Type, bool ClearData)
 			break;
 		}
 
-		case BtnType::_Ctrl:
+		case _Ctrl:
 		{
 			info->ZhongZhuiStr += (Data + " ");
 
@@ -522,7 +526,7 @@ _qstr myCalc::calcStr(void)
 }
 
 // 4.4 获取指定表达式的计算结果
-_qstr myCalc::calcStr(_def_vec_qstr& NumsVec, _def_sk_qstr& OperSk)
+_qstr myCalc::calcStr(_def_qvec() & NumsVec, _def_qsk() & OperSk)
 {
 	try
 	{
@@ -548,8 +552,8 @@ _qstr myCalc::calcStr(_def_vec_qstr& NumsVec, _def_sk_qstr& OperSk)
 					i = "/";
 				}
 
-				_FLOAT OperNum2 = getOperNum(OperSk);
-				_FLOAT OperNum1 = getOperNum(OperSk);
+				FLOAT OperNum2 = getOperNum(OperSk);
+				FLOAT OperNum1 = getOperNum(OperSk);
 
 				if (!flag->calcStackEmpty)
 				{
@@ -618,9 +622,9 @@ void myCalc::calcBracketStr(void)
 	auto strE = 2 * basicOperNums + 1;
 	auto strB = _cove_type(info->HouZhui.size() - strE, int);
 
-	_def_vec_qstr Vec = info->HouZhui.mid(strB, strE);
+	_def_qvec() Vec = info->HouZhui.mid(strB, strE);
 	info->HouZhui.remove(strB, strE);
-	_def_sk_qstr Sk = {};
+	_def_qsk() Sk = {};
 
 	info->HouZhui.emplace_back(calcStr(Vec, Sk));
 }

@@ -89,7 +89,7 @@ private:
 
 	// 获取计算结果
 	_NODISCARD _qstr calcStr(void);
-	_NODISCARD _qstr calcStr(_def_vec_qstr& NumsVec, _def_sk_qstr& OperSk);
+	_NODISCARD _qstr calcStr(_def_qvec() & NumsVec, _def_qsk() & OperSk);
 
 	// 获取当前显示在输入栏中的文本
 	_NODISCARD _qstr getDisplayingStr(void) const;
@@ -98,10 +98,10 @@ private:
 	void calcBracketStr(void);
 
 	// 获取CalcStack栈顶的操作数
-	_NODISCARD _FLOAT getOperNum(_def_sk_qstr& OperSk);
+	_NODISCARD FLOAT getOperNum(_def_qsk() & OperSk);
 
 	// 执行单操作符的简单运算
-	_NODISCARD _qstr simpleCalc(const _FLOAT& OperNum2, const _qstr& OperSymbol, const _FLOAT& OperNum1) const;
+	_NODISCARD _qstr simpleCalc(const FLOAT& OperNum2, const _qstr& OperSymbol, const FLOAT& OperNum1) const;
 
 	// 根据案件内容的类型在line1，line2中显示数据
 	_NORETURN void showInfo(const ClickEvent& Event);
@@ -143,7 +143,7 @@ private:
 	_NORETURN void handleEvent(const ClickEvent& Event);
 
 	// 获取阶乘
-	_NODISCARD _FLOAT getFactorial(const _qstr& Data) const;
+	_NODISCARD FLOAT getFactorial(const _qstr& Data) const;
 
 private slots:
 

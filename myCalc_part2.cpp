@@ -134,9 +134,7 @@ bool myCalc::isBasicOper(const _qstr& BasicOperEvent) const
 	}
 	else
 	{
-		return _STD any_of(TheBasicOper.begin(),
-						   TheBasicOper.end(),
-						   [&BasicOperEvent](const auto& i) { return i == BasicOperEvent; });
+		return _RANGE any_of(TheBasicOper, [&BasicOperEvent](const auto& i) { return i == BasicOperEvent; });
 	}
 }
 
@@ -149,9 +147,7 @@ bool myCalc::isAdvancedOper(const _qstr& AdvancedOperEvent) const
 	}
 	else
 	{
-		return _STD any_of(TheAdvancedOper.begin(),
-						   TheAdvancedOper.end(),
-						   [&AdvancedOperEvent](const auto& i) { return i == AdvancedOperEvent; });
+		return _RANGE any_of(TheAdvancedOper, [&AdvancedOperEvent](const auto& i) { return i == AdvancedOperEvent; });
 	}
 }
 
@@ -160,7 +156,7 @@ bool myCalc::isNum(const _qstr& NumEvent) const
 {
 	auto funTmp = [&](const auto& i)
 	{
-		return _STD any_of(TheNums.begin(), TheNums.end(), [&i](const auto& j) { return i == j; });
+		return _RANGE any_of(TheNums, [&i](const auto& j) { return i == j; });
 	};
 
 	if (NumEvent.isEmpty())
@@ -173,7 +169,7 @@ bool myCalc::isNum(const _qstr& NumEvent) const
 	}
 	else
 	{
-		return _STD all_of(NumEvent.begin(), NumEvent.end(), [&](const auto& i) { return i == '-' || funTmp(i); });
+		return _RANGE all_of(NumEvent, [&](const auto& i) { return i == '-' || funTmp(i); });
 	}
 }
 
@@ -186,16 +182,14 @@ bool myCalc::isCtrl(const _qstr& CtrlEvent) const
 	}
 	else
 	{
-		return _STD any_of(TheCtrl.begin(), TheCtrl.end(), [&CtrlEvent](const auto& i) { return i == CtrlEvent; });
+		return _RANGE any_of(TheCtrl, [&CtrlEvent](const auto& i) { return i == CtrlEvent; });
 	}
 }
 
 // 判断来自键盘的事件是否应该响应
 bool myCalc::isCorresponding(const int QtKey) const
 {
-	return _STD any_of(TheCorrespondingStr.begin(),
-					   TheCorrespondingStr.end(),
-					   [&QtKey](const auto& i) { return QtKey == i.first; });
+	return _RANGE any_of(TheCorrespondingStr, [&QtKey](const auto& i) { return QtKey == i.first; });
 }
 
 // 获取键盘事件转换后的文本
@@ -203,15 +197,14 @@ _qstr myCalc::getCorrespondingStr(const int StrKey) const
 {
 	_qstr ans = "";
 
-	_STD for_each(TheCorrespondingStr.begin(),
-				  TheCorrespondingStr.end(),
-				  [&](const auto& i)
-				  {
-					  if (i.first == StrKey)
-					  {
-						  ans = i.second;
-					  }
-				  });
+	_RANGE for_each(TheCorrespondingStr,
+					[&](const auto& i)
+					{
+						if (i.first == StrKey)
+						{
+							ans = i.second;
+						}
+					});
 
 	return ans;
 }
@@ -221,15 +214,14 @@ _qstr myCalc::getCorrespondingNum(const int NumKey) const
 {
 	_qstr ans = "";
 
-	_STD for_each(TheCorrespondingNum.begin(),
-				  TheCorrespondingNum.end(),
-				  [&](const auto& i)
-				  {
-					  if (i.first == NumKey)
-					  {
-						  ans = i.second;
-					  }
-				  });
+	_RANGE for_each(TheCorrespondingNum,
+					[&](const auto& i)
+					{
+						if (i.first == NumKey)
+						{
+							ans = i.second;
+						}
+					});
 
 	return ans;
 }
@@ -239,36 +231,38 @@ BtnType myCalc::getBtnType(const _qstr& BtnEvent) const
 {
 	try
 	{
+		using enum BtnType;
+
 		if (isNum(BtnEvent))
 		{
-			return BtnType::_Num;
+			return _Num;
 		}
 		else if (isBasicOper(BtnEvent))
 		{
 			if (BtnEvent == "( )" || BtnEvent == "(")
 			{
-				return BtnType::_LeftBK;
+				return _LeftBK;
 			}
 			else if (BtnEvent == ")")
 			{
-				return BtnType::_RightBK;
+				return _RightBK;
 			}
 			else
 			{
-				return BtnType::_BasicOper;
+				return _BasicOper;
 			}
 		}
 		else if (isAdvancedOper(BtnEvent))
 		{
-			return BtnType::_AdvancedOper;
+			return _AdvancedOper;
 		}
 		else if (isCtrl(BtnEvent))
 		{
-			return BtnType::_Ctrl;
+			return _Ctrl;
 		}
 		else
 		{
-			throw BtnType::_TypeErr;
+			throw _TypeErr;
 		}
 	}
 	catch (const BtnType& errCode)
@@ -282,29 +276,31 @@ CtrlType myCalc::getCtrlType(const _qstr& CtrlEvent) const
 {
 	try
 	{
+		using enum CtrlType;
+
 		if (CtrlEvent == "C")
 		{
-			return CtrlType::_C;
+			return _C;
 		}
 		else if (CtrlEvent == "CE")
 		{
-			return CtrlType::_CE;
+			return _CE;
 		}
 		else if (CtrlEvent == "DEL")
 		{
-			return CtrlType::_DEL;
+			return _DEL;
 		}
 		else if (CtrlEvent == "=")
 		{
-			return CtrlType::_EQT;
+			return _EQT;
 		}
 		else if (CtrlEvent == "EXIT")
 		{
-			return CtrlType::_EXIT;
+			return _EXIT;
 		}
 		else
 		{
-			throw CtrlType::_TypeErr;
+			throw _TypeErr;
 		}
 	}
 	catch (const CtrlType& errCode)
@@ -316,17 +312,19 @@ CtrlType myCalc::getCtrlType(const _qstr& CtrlEvent) const
 // 识别显示类型
 ShowModeSign myCalc::getBtnShowType(void) const
 {
+	using enum ShowModeSign;
+
 	if (ui.btn1->text() == "( )")
 	{
-		return ShowModeSign::_Basic;
+		return _Basic;
 	}
 	else if (ui.btn3->text() == "CE")
 	{
-		return ShowModeSign::_BCE;
+		return _BCE;
 	}
 	else if (ui.btn3->text() == "C")
 	{
-		return ShowModeSign::_BC;
+		return _BC;
 	}
 	else
 	{
@@ -474,12 +472,12 @@ void myCalc::basicOperPushStack(const _qstr& BasicOperEvent)
 // 计算高级操作符表达式
 _qstr myCalc::calcAdvancedOperData(const _qstr& Data, const _qstr& Oper) const
 {
-	_FLOAT numAns = 0.0L;
-	auto   numTmp = _cove_type(getFloat(Data), _FLOAT);
+	FLOAT numAns = 0.0L;
+	auto  numTmp = _cove_type(getFloat(Data), FLOAT);
 
 	try
 	{
-		if (numTmp < _cove_type(_NUM_MIN, _FLOAT) || numTmp > _cove_type(_NUM_MAX, _FLOAT))
+		if (numTmp < _cove_type(_NUM_MIN, FLOAT) || numTmp > _cove_type(_NUM_MAX, FLOAT))
 		{
 			throw AdvancedOperErrCode::_Num_OutOfRange;
 		}
@@ -535,13 +533,15 @@ _qstr myCalc::calcAdvancedOperData(const _qstr& Data, const _qstr& Oper) const
 
 		switch (errCode)
 		{
-			case AdvancedOperErrCode::_Num_isNegative:
-			case AdvancedOperErrCode::_Num_isZero:
+			using enum AdvancedOperErrCode;
+
+			case _Num_isNegative:
+			case _Num_isZero:
 			{
 				return "无效输入";
 			}
 
-			case AdvancedOperErrCode::_Num_OutOfRange:
+			case _Num_OutOfRange:
 			{
 				return "超出范围";
 			}
@@ -555,9 +555,9 @@ _qstr myCalc::calcAdvancedOperData(const _qstr& Data, const _qstr& Oper) const
 }
 
 // 获取阶乘
-_FLOAT myCalc::getFactorial(const _qstr& Data) const
+FLOAT myCalc::getFactorial(const _qstr& Data) const
 {
-	auto num = _cove_type(getFloat(Data), _INT);
+	auto num = _cove_type(getFloat(Data), INT);
 	LL	 ans = 1LL;
 
 	if (num < 0)
@@ -579,7 +579,7 @@ _FLOAT myCalc::getFactorial(const _qstr& Data) const
 			ans *= i;
 		}
 
-		return _cove_type(ans, _FLOAT);
+		return _cove_type(ans, FLOAT);
 	}
 }
 
@@ -685,9 +685,9 @@ void myCalc::clearLastAdvancedStr(void)
 }
 
 // 配合基础操作符，进行简单计算
-_qstr myCalc::simpleCalc(const _FLOAT& OperNum2, const _qstr& OperSymbol, const _FLOAT& OperNum1) const
+_qstr myCalc::simpleCalc(const FLOAT& OperNum2, const _qstr& OperSymbol, const FLOAT& OperNum1) const
 {
-	_FLOAT ansNum = 0.0L;
+	FLOAT ansNum = 0.0L;
 
 	try
 	{
@@ -797,7 +797,7 @@ BKPosition myCalc::findBracketStr(const BKPosition&)
 }
 
 // 配合计算，获取栈顶数字
-_FLOAT myCalc::getOperNum(_def_sk_qstr& OperSk)
+FLOAT myCalc::getOperNum(_def_qsk() & OperSk)
 {
 	if (OperSk.isEmpty())
 	{
@@ -858,12 +858,14 @@ void myCalc::setLine2Displaying(void)
 // 预处理
 void myCalc::Preprocessing(const ClickEvent& Event)
 {
+	using enum BtnType;
+
 	// 预处理1：若已经完成一次完整的计算，则清除之前的信息
 	if (flag->calcFlag)
 	{
 		clear(ClearSign::_All);
 
-		if (Event.second != BtnType::_Num)
+		if (Event.second != _Num)
 		{
 			flag->numGetOverFlag = false;
 			info->Num			 = info->lastAns;
@@ -871,20 +873,20 @@ void myCalc::Preprocessing(const ClickEvent& Event)
 	}
 
 	// 预处理2：如果完成了一次高级操作符的计算，则保存高级操作符表达式，以便必要时嵌套使用
-	if (info->lastTimeEvent->second == BtnType::_AdvancedOper)
+	if (info->lastTimeEvent->second == _AdvancedOper)
 	{
-		if (Event.second == BtnType::_Num)
+		if (Event.second == _Num)
 		{
 			clearLastAdvancedStr();
 			ui.line1->setText(info->ZhongZhuiStr);
 		}
-		else if (Event.second == BtnType::_BasicOper || Event.second == BtnType::_LeftBK ||
-				 Event.second == BtnType::_RightBK || Event.second == BtnType::_Ctrl)
+		else if (Event.second == _BasicOper || Event.second == _LeftBK || Event.second == _RightBK ||
+				 Event.second == _Ctrl)
 		{
-			takeData(info->Num, BtnType::_AdvancedOper);
+			takeData(info->Num, _AdvancedOper);
 		}
 
-		if (Event.second != BtnType::_Num && Event.second != BtnType::_AdvancedOper)
+		if (Event.second != _Num && Event.second != _AdvancedOper)
 		{
 			info->ZhongZhuiStr += (info->lastAdvancedOperStr + " ");
 		}

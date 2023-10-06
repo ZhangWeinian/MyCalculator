@@ -33,7 +33,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
     <QtBuildConfig>debug</QtBuildConfig>
     <QtModules>qml;widgets;uitools</QtModules>
-    <QtInstall>6.5.2_msvc2019_64</QtInstall>
+    <QtInstall>6.5.3_msvc2019_64</QtInstall>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
     <QtModules>core;gui;widgets</QtModules>
@@ -63,10 +63,18 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile />
     <ClCompile />
+    <ClCompile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <IntrinsicFunctions>true</IntrinsicFunctions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
@@ -108,12 +116,11 @@
     <QtMoc Include="myCalc_part2.h" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="myCalc_part1.cpp" />
-    <None Include="..\..\.clang-format" />
+    <None Include=".clang-format" />
     <None Include="cpp.hint" />
     <None Include="README.md" />
     <None Include="计算器.ico" />
     <ResourceCompile Include="计算器.rc" />
-    <ClInclude Include="HighPrecisionOperations.h" />
     <ClInclude Include="myCalc.h" />
     <ClInclude Include="myCalc_part0.h" />
     <ClInclude Include="myCalc_part1.h" />
