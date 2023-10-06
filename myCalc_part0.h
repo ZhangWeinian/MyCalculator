@@ -1,7 +1,6 @@
 #pragma once
 
 #include "./HighPrecisionOperations.h"
-#include "stdafx.h"
 
 #include <limits.h>
 #include <qcontainerfwd.h>

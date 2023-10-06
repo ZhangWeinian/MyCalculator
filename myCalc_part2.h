@@ -1,7 +1,6 @@
 #pragma once
 
 #include "./myCalc_part1.h"
-#include "stdafx.h"
 #include <ui_myCalc.h>
 
 #include <qabstractbutton.h>

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "./myCalc.h"
-#include "stdafx.h"
 #include <boost/multiprecision/detail/default_ops.hpp>
 #include <boost/multiprecision/detail/et_ops.hpp>
 #include <boost/multiprecision/detail/number_compare.hpp>

@@ -1,8 +1,6 @@
 #pragma once
 #pragma execution_character_set("utf-8")
 
-#include "stdafx.h"
-
 #include "myCalc.h"
 #include <QtWidgets/QApplication>
 

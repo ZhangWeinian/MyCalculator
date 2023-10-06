@@ -1,7 +1,6 @@
 #pragma once
 
 #include "myCalc.h"
-#include "stdafx.h"
 #include <ui_myCalc.h>
 
 #include <cstdlib>

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "./myCalc_part0.h"
-#include "stdafx.h"
 #include <type_traits>
 
 #include <functional>
