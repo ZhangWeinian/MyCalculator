@@ -126,7 +126,7 @@ void myCalc::showMode(const ShowModeSign& _Sign)
 }
 
 // 判断基础操作符
-bool myCalc::isBasicOper(_con_qstr& BasicOperEvent) const
+bool myCalc::isBasicOper(const _qstr& BasicOperEvent) const
 {
 	if (BasicOperEvent.isEmpty())
 	{
@@ -141,7 +141,7 @@ bool myCalc::isBasicOper(_con_qstr& BasicOperEvent) const
 }
 
 // 判断高级操作符
-bool myCalc::isAdvancedOper(_con_qstr& AdvancedOperEvent) const
+bool myCalc::isAdvancedOper(const _qstr& AdvancedOperEvent) const
 {
 	if (AdvancedOperEvent.isEmpty())
 	{
@@ -156,7 +156,7 @@ bool myCalc::isAdvancedOper(_con_qstr& AdvancedOperEvent) const
 }
 
 // 判断数字
-bool myCalc::isNum(_con_qstr& NumEvent) const
+bool myCalc::isNum(const _qstr& NumEvent) const
 {
 	auto funTmp = [&](const auto& i)
 	{
@@ -178,7 +178,7 @@ bool myCalc::isNum(_con_qstr& NumEvent) const
 }
 
 // 判断控制符
-bool myCalc::isCtrl(_con_qstr& CtrlEvent) const
+bool myCalc::isCtrl(const _qstr& CtrlEvent) const
 {
 	if (CtrlEvent.isEmpty())
 	{
@@ -235,7 +235,7 @@ _qstr myCalc::getCorrespondingNum(const int NumKey) const
 }
 
 // 识别按钮类型
-BtnType myCalc::getBtnType(_con_qstr& BtnEvent) const
+BtnType myCalc::getBtnType(const _qstr& BtnEvent) const
 {
 	try
 	{
@@ -278,7 +278,7 @@ BtnType myCalc::getBtnType(_con_qstr& BtnEvent) const
 }
 
 // 识别控制类型
-CtrlType myCalc::getCtrlType(_con_qstr& CtrlEvent) const
+CtrlType myCalc::getCtrlType(const _qstr& CtrlEvent) const
 {
 	try
 	{
@@ -335,7 +335,7 @@ ShowModeSign myCalc::getBtnShowType(void) const
 }
 
 // 获取运算符优先级
-bool myCalc::getPriority(_con_qstr& Oper1, _con_qstr& Oper2) const
+bool myCalc::getPriority(const _qstr& Oper1, const _qstr& Oper2) const
 {
 	Type priOper1 = 0;
 	Type priOper2 = 0;
@@ -356,7 +356,7 @@ bool myCalc::getPriority(_con_qstr& Oper1, _con_qstr& Oper2) const
 }
 
 // 处理括号
-void myCalc::handleBkEvent(_con_qstr& BkEvent)
+void myCalc::handleBkEvent(const _qstr& BkEvent)
 {
 	if (auto tmp_BK = (BkEvent == "( )") ? "(" : BkEvent; tmp_BK == "(")
 	{
@@ -436,7 +436,7 @@ void myCalc::handleDelete(void)
 }
 
 // 基础操作符入栈
-void myCalc::basicOperPushStack(_con_qstr& BasicOperEvent)
+void myCalc::basicOperPushStack(const _qstr& BasicOperEvent)
 {
 	if (BasicOperEvent == "(")
 	{
@@ -472,7 +472,7 @@ void myCalc::basicOperPushStack(_con_qstr& BasicOperEvent)
 }
 
 // 计算高级操作符表达式
-_qstr myCalc::calcAdvancedOperData(_con_qstr& Data, _con_qstr& Oper) const
+_qstr myCalc::calcAdvancedOperData(const _qstr& Data, const _qstr& Oper) const
 {
 	_FLOAT numAns = 0.0L;
 	auto   numTmp = _cove_type(getFloat(Data), _FLOAT);
@@ -555,7 +555,7 @@ _qstr myCalc::calcAdvancedOperData(_con_qstr& Data, _con_qstr& Oper) const
 }
 
 // 获取阶乘
-_FLOAT myCalc::getFactorial(_con_qstr& Data) const
+_FLOAT myCalc::getFactorial(const _qstr& Data) const
 {
 	auto num = _cove_type(getFloat(Data), _INT);
 	LL	 ans = 1LL;
@@ -590,7 +590,7 @@ _qstr myCalc::getDisplayingStr(void) const
 }
 
 // 标准数字显示
-void myCalc::formatDisplaying(_con_qstr& Num)
+void myCalc::formatDisplaying(const _qstr& Num)
 {
 	auto ShowStr = Num.isEmpty() ? getDisplayingStr() : Num;
 
@@ -628,13 +628,13 @@ void myCalc::formatDisplaying(_con_qstr& Num)
 			reverse_qstr(ShowStr);
 		}
 
-		if (haveNumSign)
-		{
-			ShowStr = "-" + ShowStr;
-		}
 		if (haveDecimal)
 		{
 			ShowStr += decimal;
+		}
+		if (haveNumSign)
+		{
+			ShowStr = "-" + ShowStr;
 		}
 	}
 
@@ -642,7 +642,7 @@ void myCalc::formatDisplaying(_con_qstr& Num)
 }
 
 // 清理数字中的逗号
-_qstr myCalc::clearCommas(_con_qstr& Str) const
+_qstr myCalc::clearCommas(const _qstr& Str) const
 {
 	_qstr ans = "";
 	for (const auto& i: Str)
@@ -685,7 +685,7 @@ void myCalc::clearLastAdvancedStr(void)
 }
 
 // 配合基础操作符，进行简单计算
-_qstr myCalc::simpleCalc(const _FLOAT& OperNum2, _con_qstr& OperSymbol, const _FLOAT& OperNum1) const
+_qstr myCalc::simpleCalc(const _FLOAT& OperNum2, const _qstr& OperSymbol, const _FLOAT& OperNum1) const
 {
 	_FLOAT ansNum = 0.0L;
 

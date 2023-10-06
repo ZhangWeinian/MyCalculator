@@ -44,17 +44,17 @@ private:
 	_NORETURN void showMode(const ShowModeSign& _Sign);
 
 	// 分别判断是否是操作符、数字、控制符。返回 bool 类型的判断结果：是--true、否--false
-	_NODISCARD bool isBasicOper(_con_qstr& BasicOperEvent) const;
-	_NODISCARD bool isAdvancedOper(_con_qstr& AdvancedOperEvent) const;
-	_NODISCARD bool isNum(_con_qstr& NumEvent) const;
-	_NODISCARD bool isCtrl(_con_qstr& CtrlEvent) const;
+	_NODISCARD bool isBasicOper(const _qstr& BasicOperEvent) const;
+	_NODISCARD bool isAdvancedOper(const _qstr& AdvancedOperEvent) const;
+	_NODISCARD bool isNum(const _qstr& NumEvent) const;
+	_NODISCARD bool isCtrl(const _qstr& CtrlEvent) const;
 
 	// 判断来自键盘的事件是否应该相应
 	_NODISCARD bool isCorresponding(const int QtKey) const;
 
 	// 分别返回事件、控制操作符、当前显示内容的类型
-	_NODISCARD BtnType		getBtnType(_con_qstr& BtnEvent) const;
-	_NODISCARD CtrlType		getCtrlType(_con_qstr& CtrlEvent) const;
+	_NODISCARD BtnType		getBtnType(const _qstr& BtnEvent) const;
+	_NODISCARD CtrlType		getCtrlType(const _qstr& CtrlEvent) const;
 	_NODISCARD ShowModeSign getBtnShowType(void) const;
 
 	// 获取键盘事件转换后的文本或数字
@@ -62,13 +62,13 @@ private:
 	_NODISCARD _qstr getCorrespondingNum(const int NumKey) const;
 
 	// 获取基础操作符优先级
-	_NODISCARD bool getPriority(_con_qstr& Oper1, _con_qstr& Oper2) const;
+	_NODISCARD bool getPriority(const _qstr& Oper1, const _qstr& Oper2) const;
 
 	// 分别处理数字、基础操作符、高级操作符、括号、控制符、删除键
-	void		   handleNum(_con_qstr& NumEvent);
-	void		   handleBasicOper(_con_qstr& BasicOperEvent);
-	_NORETURN void handleAdvancedOper(_con_qstr& AdvancedOperEvent);
-	_NORETURN void handleBkEvent(_con_qstr& BkEvent);
+	void		   handleNum(const _qstr& NumEvent);
+	void		   handleBasicOper(const _qstr& BasicOperEvent);
+	_NORETURN void handleAdvancedOper(const _qstr& AdvancedOperEvent);
+	_NORETURN void handleBkEvent(const _qstr& BkEvent);
 	_NORETURN void handleCtrl(const CtrlType& _Type);
 	_NORETURN void handleDelete(void);
 
@@ -76,10 +76,10 @@ private:
 	_NODISCARD bool handleNumSign(void);
 
 	// 基本操作符入栈
-	void basicOperPushStack(_con_qstr& BasicOperEvent);
+	void basicOperPushStack(const _qstr& BasicOperEvent);
 
 	// 高级操作符计算
-	_NODISCARD _qstr calcAdvancedOperData(_con_qstr& Data, _con_qstr& Oper) const;
+	_NODISCARD _qstr calcAdvancedOperData(const _qstr& Data, const _qstr& Oper) const;
 
 	// 最终计算前进行简单检查
 	_NORETURN void inspectionStr_FinallyCalc(void);
@@ -101,22 +101,22 @@ private:
 	_NODISCARD _FLOAT getOperNum(_def_sk_qstr& OperSk);
 
 	// 执行单操作符的简单运算
-	_NODISCARD _qstr simpleCalc(const _FLOAT& OperNum2, _con_qstr& OperSymbol, const _FLOAT& OperNum1) const;
+	_NODISCARD _qstr simpleCalc(const _FLOAT& OperNum2, const _qstr& OperSymbol, const _FLOAT& OperNum1) const;
 
 	// 根据案件内容的类型在line1，line2中显示数据
 	_NORETURN void showInfo(const ClickEvent& Event);
 
 	// 标准数字显示
-	_NORETURN void formatDisplaying(_con_qstr& Num = "");
+	_NORETURN void formatDisplaying(const _qstr& Num = "");
 
 	// 清理数字中的逗号
-	_NODISCARD _qstr clearCommas(_con_qstr& Str) const;
+	_NODISCARD _qstr clearCommas(const _qstr& Str) const;
 
 	// 高级操作符直接显示答案
 	void showAdvancedOperInfo(const ClickEvent& Event);
 
 	// 获取一个高级操作符表达式
-	_NODISCARD _qstr getAdvancedStr(_con_qstr& Event, _con_qstr& keyNum) const;
+	_NODISCARD _qstr getAdvancedStr(const _qstr& Event, const _qstr& keyNum) const;
 
 	// 配合高级操作符，更新显示文本。定义：true-更新成功；false--更新失败
 	_NODISCARD bool updataZhongZhuiStr(void);
@@ -143,7 +143,7 @@ private:
 	_NORETURN void handleEvent(const ClickEvent& Event);
 
 	// 获取阶乘
-	_NODISCARD _FLOAT getFactorial(_con_qstr& Data) const;
+	_NODISCARD _FLOAT getFactorial(const _qstr& Data) const;
 
 private slots:
 

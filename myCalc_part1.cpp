@@ -218,7 +218,7 @@ void myCalc::handleEvent(const ClickEvent& Event)
 }
 
 // 2.3 处理数字
-void myCalc::handleNum(_con_qstr& NumEvent)
+void myCalc::handleNum(const _qstr& NumEvent)
 {
 	// 标识符更新。其中，数字正负号调整是否结束不做要求
 	if (!flag->operFlag)
@@ -253,7 +253,7 @@ void myCalc::handleNum(_con_qstr& NumEvent)
 }
 
 // 2.4 处理基础操作符
-void myCalc::handleBasicOper(_con_qstr& BasicOperEvent)
+void myCalc::handleBasicOper(const _qstr& BasicOperEvent)
 {
 	// 点击基础操作符之前，保证有一个数字被记录
 	if (info->Num.isEmpty() && BasicOperEvent != "( )" && BasicOperEvent != "(" && BasicOperEvent != ")")
@@ -306,7 +306,7 @@ void myCalc::handleBasicOper(_con_qstr& BasicOperEvent)
 }
 
 // 2.5 处理高级操作符
-void myCalc::handleAdvancedOper(_con_qstr& AdvancedOperEvent)
+void myCalc::handleAdvancedOper(const _qstr& AdvancedOperEvent)
 {
 	// 此部分的操作符需要直接计算答案，故保证有一个数字被记录
 	if ((info->lastTimeEvent->second == BtnType::_AdvancedOper || info->lastTimeEvent->first == ")") &&
@@ -482,7 +482,7 @@ void myCalc::inspectionStr_FinallyCalc(void)
 }
 
 // 4.2 获取一个高级操作符表达式
-_qstr myCalc::getAdvancedStr(_con_qstr& Event, _con_qstr& keyNum) const
+_qstr myCalc::getAdvancedStr(const _qstr& Event, const _qstr& keyNum) const
 {
 	_qstr showStr = "";
 

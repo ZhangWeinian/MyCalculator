@@ -64,7 +64,6 @@ using _FLOAT = long double;
 
 using _str		 = _STD string;
 using _qstr		 = QString;
-using _con_qstr	 = const QString;
 using BKPosition = QPair<size_t, size_t>;
 
 

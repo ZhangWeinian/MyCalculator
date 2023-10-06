@@ -83,23 +83,23 @@ constexpr BKPosition _NeedPosition = BKPosition(USHRT_MAX, USHRT_MAX);
 constexpr int _NeedBasicOperNums = -1;
 
 // 预定义所有基础操作符
-const _def_vec_qstr TheBasicOper = { "+", "-", "×", "*", "÷", "/", "( )", "(", ")", "±" };
+const _def_vec_qstr TheBasicOper { "+", "-", "×", "*", "÷", "/", "( )", "(", ")", "±" };
 
 // 预定义所有高级操作符
-const _def_vec_qstr TheAdvancedOper = { "1/x", "x²", "√x", "%", "!", "^" };
+const _def_vec_qstr TheAdvancedOper { "1/x", "x²", "√x", "%", "!", "^" };
 
 // 预定义所有数字
-const _def_vec(QChar) TheNums = { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.' };
+const _def_vec(QChar) TheNums { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.' };
 
 // 预定于所有控制符
-const _def_vec_qstr TheCtrl = { "CE", "C", "DEL", "=", "EXIT", "#" };
+const _def_vec_qstr TheCtrl { "CE", "C", "DEL", "=", "EXIT", "#" };
 
 // 预定义运算符优先级
-const _def_vec(_make_Pair(_qstr, Type)) ThePriority = { _def_pair("+", 0), _def_pair("-", 0), _def_pair("*", 1),
-														_def_pair("×", 1), _def_pair("/", 1), _def_pair("÷", 1) };
+const _def_vec(_make_Pair(_qstr, Type)) ThePriority { _def_pair("+", 0), _def_pair("-", 0), _def_pair("*", 1),
+													  _def_pair("×", 1), _def_pair("/", 1), _def_pair("÷", 1) };
 
 // 预定义键盘转换字符
-const _def_vec(_make_Pair(_QT Key, _qstr)) TheCorrespondingStr = {
+const _def_vec(_make_Pair(_QT Key, _qstr)) TheCorrespondingStr {
 	_def_pair(_QT Key_Backspace, "DEL"), // 退格键
 	_def_pair(_QT Key_Delete, "DEL"),	 // 删除建
 	_def_pair(_QT Key_Enter, "="),		 // 回车建(小键盘)
@@ -119,7 +119,7 @@ const _def_vec(_make_Pair(_QT Key, _qstr)) TheCorrespondingStr = {
 };
 
 // 预定义键盘转换数字
-const _def_vec(_make_Pair(_QT Key, _qstr)) TheCorrespondingNum = {
+const _def_vec(_make_Pair(_QT Key, _qstr)) TheCorrespondingNum {
 	_def_pair(_QT Key_0, "0"), _def_pair(_QT Key_1, "1"), _def_pair(_QT Key_2, "2"),	 _def_pair(_QT Key_3, "3"),
 	_def_pair(_QT Key_4, "4"), _def_pair(_QT Key_5, "5"), _def_pair(_QT Key_6, "6"),	 _def_pair(_QT Key_7, "7"),
 	_def_pair(_QT Key_8, "8"), _def_pair(_QT Key_9, "9"), _def_pair(_QT Key_Period, ".")
@@ -294,7 +294,7 @@ _NODISCARD inline _qstr getQstr(const _FLOAT& Num)
 }
 
 // _qstr 转 _FLOAT
-_NODISCARD inline _FLOAT getFloat(_con_qstr& Str)
+_NODISCARD inline _FLOAT getFloat(const _qstr& Str)
 {
 #if defined(_myFLOAT)
 	return _cove_type(Str.toStdString(), _FLOAT);
