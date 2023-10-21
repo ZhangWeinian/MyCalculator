@@ -1,6 +1,6 @@
 #pragma once
 
-#include "./myCalc_part0.h"
+#include "myCalc_part0.h"
 #include <type_traits>
 
 #include <functional>
@@ -77,10 +77,10 @@ const enum class StackErrCode: Sign
 };
 
 // 需要表达式位置
-constexpr BKPosition _NeedPosition = BKPosition(USHRT_MAX, USHRT_MAX);
+constexpr BKPosition _NeedPosition { BKPosition(USHRT_MAX, USHRT_MAX) };
 
 // 需要基础操作符数量
-constexpr int _NeedBasicOperNums = -1;
+constexpr int _NeedBasicOperNums { -1 };
 
 // 预定义所有基础操作符
 const _def_qvec() TheBasicOper { "+", "-", "×", "*", "÷", "/", "( )", "(", ")", "±" };
@@ -128,7 +128,7 @@ const _def_vec(_make_Pair(_QT Key, _qstr)) TheCorrespondingNum {
 /*----------------------------------------------------------------------------------------------*/
 using ClickEvent = _make_Pair(_qstr, BtnType);
 
-#define _make_ce(qstr_text, BtnType_type) ClickEvent(_STD make_pair<_qstr, BtnType>((qstr_text), (BtnType_type)))
+#define _make_ce(qstr_text, BtnType_type) ClickEvent(::std::make_pair<_qstr, BtnType>((qstr_text), (BtnType_type)))
 
 #define _clear_ce(UPtr) UPtr.reset(new ClickEvent)
 
@@ -137,28 +137,28 @@ class BasicInformation
 public:
 
 	/*--DATA--*/
-	_def_uptr_ce() thisTimeEvent = _init_uptr_ce(); // 此次获取的事件
-	_def_uptr_ce() lastTimeEvent = _init_uptr_ce(); // 上次获取的事件
+	_def_ce() thisTimeEvent = _init_ce(); // 此次获取的事件
+	_def_ce() lastTimeEvent = _init_ce(); // 上次获取的事件
 
-	_qstr Num				  = "";					// 一个完整的数字
-	_qstr Symbol			  = "";					// 一个确定的符号
-	_qstr lastAns			  = "";					// 一次有效的、完整的、按“=”后的计算结果
-	_qstr lastAdvancedOperStr = "";					// 上一次的高级运算符表达式
-	_qstr lastAdvancedOper	  = "";					// 上一个高级算符
+	_qstr Num				  = "";		  // 一个完整的数字
+	_qstr Symbol			  = "";		  // 一个确定的符号
+	_qstr lastAns			  = "";		  // 一次有效的、完整的、按“=”后的计算结果
+	_qstr lastAdvancedOperStr = "";		  // 上一次的高级运算符表达式
+	_qstr lastAdvancedOper	  = "";		  // 上一个高级算符
 
-	_def_qvec() HouZhui	 = {};						// 后缀表达式
-	_def_qsk() CalcStack = {};						// 操作栈
+	_def_qvec() HouZhui	 = {};			  // 后缀表达式
+	_def_qsk() CalcStack = {};			  // 操作栈
 
-	_qstr ZhongZhuiStr = "";						// 中缀表达式（字符串）
+	_qstr ZhongZhuiStr = "";			  // 中缀表达式（字符串）
 
-	short BasicOperNums = 0;						// 括号中的基础操作符计数
+	short BasicOperNums = 0;			  // 括号中的基础操作符计数
 
 	/*--Fun--*/
 	_NORETURN BasicInformation(void) = default;
 
 	_NORETURN ~BasicInformation(void) = default;
 
-	_NORETURN void clear(const ClearSign _Sign)
+	_NORETURN void clear(const ClearSign _Sign) noexcept
 	{
 		_clear_ce(thisTimeEvent);
 
@@ -172,7 +172,7 @@ public:
 			HouZhui	  = {};
 			CalcStack = {};
 
-			lastTimeEvent = _init_uptr_ce();
+			lastTimeEvent = _init_ce();
 
 			Symbol = "";
 
@@ -188,7 +188,7 @@ class ImportantFlag
 public:
 
 	/*--DATA--*/
-	short bkFlag = 0;			 // 括号匹配计数
+	unsigned short bkFlag = 0;	 // 括号匹配计数
 
 	bool calcFlag		= false; // 是否完成一次完整的运算
 	bool numSignFlag	= true;	 // 正负号调整。true：调整结束；false：正在调整
@@ -211,7 +211,7 @@ public:
 
 	_NORETURN ~ImportantFlag(void) = default;
 
-	_NORETURN void clear(const ClearSign _Sign)
+	_NORETURN void clear(const ClearSign _Sign) noexcept
 	{
 		numSignFlag	   = true;
 		numGetOverFlag = true;
@@ -236,40 +236,20 @@ public:
 	}
 };
 
-_NODISCARD inline bool operator==(const Sign num1, ClearSign num2)
+_NODISCARD inline bool operator==(const Sign num1, ClearSign num2) noexcept
 {
 	return _cove_ushort(num1) == _cove_ushort(num2);
 }
 
-_NODISCARD inline bool operator!=(const Sign num1, ClearSign num2)
-{
-	return _cove_ushort(num1) != _cove_ushort(num2);
-}
-
-_NODISCARD inline bool operator==(const Type num1, BtnType num2)
+_NODISCARD inline bool operator==(const Type num1, BtnType num2) noexcept
 {
 	return _cove_ushort(num1) == _cove_ushort(num2);
-}
-
-_NODISCARD inline bool operator!=(const Type num1, BtnType num2)
-{
-	return _cove_ushort(num1) != _cove_ushort(num2);
-}
-
-_NODISCARD inline bool operator==(const BtnType num1, Type num2)
-{
-	return _cove_ushort(num1) == _cove_ushort(num2);
-}
-
-_NODISCARD inline bool operator!=(const BtnType num1, Type num2)
-{
-	return _cove_ushort(num1) != _cove_ushort(num2);
 }
 
 // _FLOAT 转 _qstr
-_NODISCARD inline _qstr getQstr(const FLOAT& Num)
+_NODISCARD inline _qstr getQstr(const FLOAT& Num) noexcept
 {
-	_str tmp = _STD to_string(Num);
+	_str tmp { _STD to_string(Num) };
 
 	if (auto dpoint = tmp.find('.'); dpoint != -1)
 	{
@@ -288,13 +268,13 @@ _NODISCARD inline _qstr getQstr(const FLOAT& Num)
 }
 
 // _qstr 转 _FLOAT
-_NODISCARD inline FLOAT getFloat(const _qstr& Str)
+_NODISCARD inline FLOAT getFloat(const _qstr& Str) noexcept
 {
 	return _STD stold(Str.toStdString());
 }
 
 // 删除 _qstr 的最后一个字符（如果是汉字，则删除最后一个汉字）
-_NORETURN inline void pop_back(_qstr& Str)
+_NORETURN inline void pop_back(_qstr& Str) noexcept
 {
 	if (auto len = Str.size() - 1; len >= 0)
 	{
@@ -303,7 +283,7 @@ _NORETURN inline void pop_back(_qstr& Str)
 }
 
 // 删除 _qstr 的第一个字符（如果是汉字，则删除第一个汉字）
-_NORETURN inline void pop_front(_qstr& Str)
+_NORETURN inline void pop_front(_qstr& Str) noexcept
 {
 	if (auto len = Str.size() - 1; len >= 0)
 	{
@@ -312,7 +292,7 @@ _NORETURN inline void pop_front(_qstr& Str)
 }
 
 // 删除 _qstr 的第一个和最后一个字符
-_NORETURN inline void pop_back_front(_qstr& Str)
+_NORETURN inline void pop_back_front(_qstr& Str) noexcept
 {
 	if (Str.size() - 2 >= 0)
 	{
@@ -322,10 +302,10 @@ _NORETURN inline void pop_back_front(_qstr& Str)
 }
 
 // _qstr 反转
-_NORETURN inline void reverse_qstr(_qstr& Str)
+_NORETURN inline void reverse_qstr(_qstr& Str) noexcept
 {
-	_qstr  ans = "";
-	_RANGE for_each(Str, [&ans](const auto& i) { ans += i; });
+	_qstr ans { "" };
+	_RG	  for_each(Str.rbegin(), Str.rend(), [&ans](const auto& i) { ans += i; });
 
 	Str = _STD move(ans);
 }

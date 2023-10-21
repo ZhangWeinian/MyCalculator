@@ -1,10 +1,6 @@
 #pragma once
 
 #include "./myCalc.h"
-#include <boost/multiprecision/detail/default_ops.hpp>
-#include <boost/multiprecision/detail/et_ops.hpp>
-#include <boost/multiprecision/detail/number_compare.hpp>
-#include <boost/multiprecision/number.hpp>
 #include <ui_myCalc.h>
 
 #include <algorithm>
@@ -26,28 +22,17 @@
 #include <version>
 
 // 基础功能初始化
-void myCalc::initUI(void)
+void myCalc::initUI(void) noexcept
 {
 	// 显示初始化
 	showMode(ShowModeSign::_Basic);
-
-	// 数据初始化
-	initData();
 
 	// 功能初始化
 	initFun();
 }
 
-// 数据初始化
-void myCalc::initData(void)
-{
-	info		= _init_uptr(BasicInformation);
-	flag		= _init_uptr(ImportantFlag);
-	buttonGroup = _init_uptr(QButtonGroup, this);
-}
-
 // 函数初始化
-void myCalc::initFun(void)
+void myCalc::initFun(void) noexcept
 {
 	// 找到所有按钮，放到一个组里
 	for (auto& btn: findChildren<QPushButton*>())
@@ -67,11 +52,13 @@ void myCalc::initFun(void)
 }
 
 // 控制三个特殊位置的显示
-void myCalc::showMode(const ShowModeSign& _Sign)
+void myCalc::showMode(const ShowModeSign& _Sign) noexcept
 {
 	switch (_Sign)
 	{
-		case ShowModeSign::_Basic:
+		using enum ShowModeSign;
+
+		case _Basic:
 		{
 			ui.btn1->setText("( )");
 			ui.btn2->setText("CE");
@@ -80,7 +67,7 @@ void myCalc::showMode(const ShowModeSign& _Sign)
 			break;
 		}
 
-		case ShowModeSign::_BC:
+		case _BC:
 		{
 			ui.btn1->setText("(");
 			ui.btn2->setText(")");
@@ -89,7 +76,7 @@ void myCalc::showMode(const ShowModeSign& _Sign)
 			break;
 		}
 
-		case ShowModeSign::_BCE:
+		case _BCE:
 		{
 			ui.btn1->setText("(");
 			ui.btn2->setText(")");
@@ -98,7 +85,7 @@ void myCalc::showMode(const ShowModeSign& _Sign)
 			break;
 		}
 
-		case ShowModeSign::_OnlyBK:
+		case _OnlyBK:
 		{
 			ui.btn1->setText("(");
 			ui.btn2->setText(")");
@@ -106,14 +93,14 @@ void myCalc::showMode(const ShowModeSign& _Sign)
 			break;
 		}
 
-		case ShowModeSign::_OnlyCE:
+		case _OnlyCE:
 		{
 			ui.btn3->setText("CE");
 
 			break;
 		}
 
-		case ShowModeSign::_OnlyC:
+		case _OnlyC:
 		{
 			ui.btn3->setText("C");
 
@@ -121,12 +108,14 @@ void myCalc::showMode(const ShowModeSign& _Sign)
 		}
 
 		default:
+		{
 			break;
+		}
 	}
 }
 
 // 判断基础操作符
-bool myCalc::isBasicOper(const _qstr& BasicOperEvent) const
+bool myCalc::isBasicOper(const _qstr& BasicOperEvent) const noexcept
 {
 	if (BasicOperEvent.isEmpty())
 	{
@@ -134,12 +123,12 @@ bool myCalc::isBasicOper(const _qstr& BasicOperEvent) const
 	}
 	else
 	{
-		return _RANGE any_of(TheBasicOper, [&BasicOperEvent](const auto& i) { return i == BasicOperEvent; });
+		return _RG any_of(TheBasicOper, [&BasicOperEvent](const auto& i) { return i == BasicOperEvent; });
 	}
 }
 
 // 判断高级操作符
-bool myCalc::isAdvancedOper(const _qstr& AdvancedOperEvent) const
+bool myCalc::isAdvancedOper(const _qstr& AdvancedOperEvent) const noexcept
 {
 	if (AdvancedOperEvent.isEmpty())
 	{
@@ -147,16 +136,16 @@ bool myCalc::isAdvancedOper(const _qstr& AdvancedOperEvent) const
 	}
 	else
 	{
-		return _RANGE any_of(TheAdvancedOper, [&AdvancedOperEvent](const auto& i) { return i == AdvancedOperEvent; });
+		return _RG any_of(TheAdvancedOper, [&AdvancedOperEvent](const auto& i) { return i == AdvancedOperEvent; });
 	}
 }
 
 // 判断数字
-bool myCalc::isNum(const _qstr& NumEvent) const
+bool myCalc::isNum(const _qstr& NumEvent) const noexcept
 {
 	auto funTmp = [&](const auto& i)
 	{
-		return _RANGE any_of(TheNums, [&i](const auto& j) { return i == j; });
+		return _RG any_of(TheNums, [&i](const auto& j) { return i == j; });
 	};
 
 	if (NumEvent.isEmpty())
@@ -169,12 +158,12 @@ bool myCalc::isNum(const _qstr& NumEvent) const
 	}
 	else
 	{
-		return _RANGE all_of(NumEvent, [&](const auto& i) { return i == '-' || funTmp(i); });
+		return _RG all_of(NumEvent, [&](const auto& i) { return i == '-' || funTmp(i); });
 	}
 }
 
 // 判断控制符
-bool myCalc::isCtrl(const _qstr& CtrlEvent) const
+bool myCalc::isCtrl(const _qstr& CtrlEvent) const noexcept
 {
 	if (CtrlEvent.isEmpty())
 	{
@@ -182,52 +171,52 @@ bool myCalc::isCtrl(const _qstr& CtrlEvent) const
 	}
 	else
 	{
-		return _RANGE any_of(TheCtrl, [&CtrlEvent](const auto& i) { return i == CtrlEvent; });
+		return _RG any_of(TheCtrl, [&CtrlEvent](const auto& i) { return i == CtrlEvent; });
 	}
 }
 
 // 判断来自键盘的事件是否应该响应
 bool myCalc::isCorresponding(const int QtKey) const
 {
-	return _RANGE any_of(TheCorrespondingStr, [&QtKey](const auto& i) { return QtKey == i.first; });
+	return _RG any_of(TheCorrespondingStr, [&QtKey](const auto& i) { return QtKey == i.first; });
 }
 
 // 获取键盘事件转换后的文本
-_qstr myCalc::getCorrespondingStr(const int StrKey) const
+_qstr myCalc::getCorrespondingStr(const int StrKey) const noexcept
 {
 	_qstr ans = "";
 
-	_RANGE for_each(TheCorrespondingStr,
-					[&](const auto& i)
-					{
-						if (i.first == StrKey)
-						{
-							ans = i.second;
-						}
-					});
+	_RG for_each(TheCorrespondingStr,
+				 [&](const auto& i)
+				 {
+					 if (i.first == StrKey)
+					 {
+						 ans = i.second;
+					 }
+				 });
 
 	return ans;
 }
 
 // 获取键盘事件转换后的数字
-_qstr myCalc::getCorrespondingNum(const int NumKey) const
+_qstr myCalc::getCorrespondingNum(const int NumKey) const noexcept
 {
-	_qstr ans = "";
+	_qstr ans { "" };
 
-	_RANGE for_each(TheCorrespondingNum,
-					[&](const auto& i)
-					{
-						if (i.first == NumKey)
-						{
-							ans = i.second;
-						}
-					});
+	_RG for_each(TheCorrespondingNum,
+				 [&](const auto& i)
+				 {
+					 if (i.first == NumKey)
+					 {
+						 ans = i.second;
+					 }
+				 });
 
 	return ans;
 }
 
 // 识别按钮类型
-BtnType myCalc::getBtnType(const _qstr& BtnEvent) const
+BtnType myCalc::getBtnType(const _qstr& BtnEvent) const noexcept
 {
 	try
 	{
@@ -272,7 +261,7 @@ BtnType myCalc::getBtnType(const _qstr& BtnEvent) const
 }
 
 // 识别控制类型
-CtrlType myCalc::getCtrlType(const _qstr& CtrlEvent) const
+CtrlType myCalc::getCtrlType(const _qstr& CtrlEvent) const noexcept
 {
 	try
 	{
@@ -310,7 +299,7 @@ CtrlType myCalc::getCtrlType(const _qstr& CtrlEvent) const
 }
 
 // 识别显示类型
-ShowModeSign myCalc::getBtnShowType(void) const
+ShowModeSign myCalc::getBtnShowType(void) const noexcept
 {
 	using enum ShowModeSign;
 
@@ -333,10 +322,10 @@ ShowModeSign myCalc::getBtnShowType(void) const
 }
 
 // 获取运算符优先级
-bool myCalc::getPriority(const _qstr& Oper1, const _qstr& Oper2) const
+bool myCalc::getPriority(const _qstr& Oper1, const _qstr& Oper2) const noexcept
 {
-	Type priOper1 = 0;
-	Type priOper2 = 0;
+	Type priOper1 {};
+	Type priOper2 {};
 
 	for (const auto& [first, second]: ThePriority)
 	{
@@ -555,22 +544,22 @@ _qstr myCalc::calcAdvancedOperData(const _qstr& Data, const _qstr& Oper) const
 }
 
 // 获取阶乘
-FLOAT myCalc::getFactorial(const _qstr& Data) const
+FLOAT myCalc::getFactorial(const _qstr& Data) const noexcept
 {
 	auto num = _cove_type(getFloat(Data), INT);
 	LL	 ans = 1LL;
 
 	if (num < 0)
 	{
-		return -1; //未定义负数的阶乘
+		return -1L; //未定义负数的阶乘
 	}
 	else if (num == 0)
 	{
-		return 1;
+		return 1L;
 	}
 	else if (num >= 20)
 	{
-		return -2; //计算结果超出范围
+		return -2L; //计算结果超出范围
 	}
 	else
 	{
@@ -584,7 +573,7 @@ FLOAT myCalc::getFactorial(const _qstr& Data) const
 }
 
 // 获取当前显示在输入栏中的文本
-_qstr myCalc::getDisplayingStr(void) const
+_qstr myCalc::getDisplayingStr(void) const noexcept
 {
 	return ui.line2->text();
 }
@@ -642,7 +631,7 @@ void myCalc::formatDisplaying(const _qstr& Num)
 }
 
 // 清理数字中的逗号
-_qstr myCalc::clearCommas(const _qstr& Str) const
+_qstr myCalc::clearCommas(const _qstr& Str) const noexcept
 {
 	_qstr ans = "";
 	for (const auto& i: Str)
@@ -685,7 +674,7 @@ void myCalc::clearLastAdvancedStr(void)
 }
 
 // 配合基础操作符，进行简单计算
-_qstr myCalc::simpleCalc(const FLOAT& OperNum2, const _qstr& OperSymbol, const FLOAT& OperNum1) const
+_qstr myCalc::simpleCalc(const FLOAT& OperNum2, const _qstr& OperSymbol, const FLOAT& OperNum1) const noexcept
 {
 	FLOAT ansNum = 0.0L;
 
@@ -797,12 +786,12 @@ BKPosition myCalc::findBracketStr(const BKPosition&)
 }
 
 // 配合计算，获取栈顶数字
-FLOAT myCalc::getOperNum(_def_qsk() & OperSk)
+FLOAT myCalc::getOperNum(_def_qsk() & OperSk) noexcept
 {
 	if (OperSk.isEmpty())
 	{
 		flag->calcStackEmpty = true;
-		return 0.0;
+		return 0.0L;
 	}
 	else
 	{
@@ -821,7 +810,7 @@ FLOAT myCalc::getOperNum(_def_qsk() & OperSk)
 }
 
 // 防止重复记录
-bool myCalc::dontDuplicateRecord(const ClickEvent& Event) const
+bool myCalc::dontDuplicateRecord(const ClickEvent& Event) const noexcept
 {
 	if (Event != *info->lastTimeEvent)
 	{
@@ -856,7 +845,7 @@ void myCalc::setLine2Displaying(void)
 }
 
 // 预处理
-void myCalc::Preprocessing(const ClickEvent& Event)
+void myCalc::thePreprocessing(const ClickEvent& Event) noexcept
 {
 	using enum BtnType;
 

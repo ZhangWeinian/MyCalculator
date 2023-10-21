@@ -13,15 +13,15 @@
 	#define _STD ::std::
 #endif // !_STD
 
-#ifndef _RANGE
-	#define _RANGE ::std::ranges::
-	#define _VIEW  ::std::ranges::views::
-#endif // !_RANGE
-
+#ifndef _RG
+	#define _RG ::std::ranges::
+	#define _VI ::std::ranges::views::
+#endif // !_RG
 
 #ifndef _QT
 	#define _QT ::Qt::
 #endif // !_QT
+
 
 #ifndef _NORETURN
 	#define _NORETURN [[noreturn]]
@@ -62,7 +62,7 @@ constexpr LL   _NUM_MIN		  = LLONG_MIN;
 
 
 #define _def_uptr(PtrType)		::std::unique_ptr<PtrType>
-#define _def_uptr_ce()			::std::unique_ptr<ClickEvent>
+#define _def_ce()				::std::unique_ptr<ClickEvent>
 #define _def_pair(type1, type2) ::std::make_pair(type1, type2)
 
 #define _make_Pair(type1, type2) ::std::pair<type1, type2>
@@ -72,4 +72,4 @@ constexpr LL   _NUM_MIN		  = LLONG_MIN;
 
 #define _init_type(init_content, init_type) static_cast<init_type>(init_content)
 #define _init_uptr(CE_Type, ...)			::std::make_unique<CE_Type>(##__VA_ARGS__)
-#define _init_uptr_ce(...)					::std::make_unique<ClickEvent>(##__VA_ARGS__)
+#define _init_ce(...)						::std::make_unique<ClickEvent>(##__VA_ARGS__)

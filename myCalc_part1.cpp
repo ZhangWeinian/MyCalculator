@@ -29,11 +29,11 @@ myCalc::myCalc(QWidget* parent): QWidget(parent)
 myCalc::~myCalc(void) = default;
 
 // 1.1 监听鼠标点击的事件
-void myCalc::onButtonGroupCliked(const QAbstractButton* Btn)
+void myCalc::onButtonGroupCliked(const QAbstractButton* Btn) noexcept
 {
 	// 通过鼠标点击屏幕获得的的内容和类型
-	auto text = Btn->text();
-	auto type = getBtnType(text);
+	auto text { Btn->text() };
+	auto type { getBtnType(text) };
 
 	flag->fromKeyboard = false;
 	flag->fromClick	   = true;
@@ -70,9 +70,9 @@ void myCalc::keyReleaseEvent(QKeyEvent* KeyEvent)
 }
 
 // 1.3 部分键盘文本转换
-_qstr myCalc::getKeyboardText(const QKeyEvent* KeyEvent)
+_qstr myCalc::getKeyboardText(const QKeyEvent* KeyEvent) noexcept
 {
-	_qstr ans = "";
+	_qstr ans { "" };
 
 	if (auto key = KeyEvent->key(); key == 16777248)
 	{
@@ -91,7 +91,7 @@ _qstr myCalc::getKeyboardText(const QKeyEvent* KeyEvent)
 }
 
 // 1.3 为了处理异常自主添加的事件
-void myCalc::onInspectionStr(const ClickEvent& AddEvent)
+void myCalc::onInspectionStr(const ClickEvent& AddEvent) noexcept
 {
 	handleEvent(AddEvent);
 }
@@ -172,7 +172,7 @@ void myCalc::inspectionStr_InputTime(const ClickEvent& ThisTimeEvent)
 void myCalc::handleEvent(const ClickEvent& Event)
 {
 	// 预处理
-	Preprocessing(Event);
+	thePreprocessing(Event);
 
 	// 记录本次事件的内容
 	*info->thisTimeEvent = Event;
@@ -209,7 +209,9 @@ void myCalc::handleEvent(const ClickEvent& Event)
 		}
 
 		default:
+		{
 			break;
+		}
 	}
 
 	// 处理显示
@@ -351,7 +353,9 @@ void myCalc::handleCtrl(const CtrlType& _Type)
 {
 	switch (_Type)
 	{
-		case CtrlType::_C:
+		using enum CtrlType;
+
+		case _C:
 		{
 			clear(ClearSign::_All);
 			showMode(ShowModeSign::_Basic);
@@ -359,7 +363,7 @@ void myCalc::handleCtrl(const CtrlType& _Type)
 			break;
 		}
 
-		case CtrlType::_CE:
+		case _CE:
 		{
 			clear(ClearSign::_OnlyLine2);
 
@@ -375,21 +379,25 @@ void myCalc::handleCtrl(const CtrlType& _Type)
 			break;
 		}
 
-		case CtrlType::_DEL:
+		case _DEL:
 		{
 			handleDelete();
 			break;
 		}
 
-		case CtrlType::_EQT:
+		case _EQT:
 		{
-			inspectionStr_FinallyCalc();
+			if (inspectionStr_FinallyCalc())
+			{
+				takeData(info->Num, BtnType::_Num);
 
-			takeData(info->Num, BtnType::_Num);
-
-			info->Num = calcStr();
-
-			info->lastAns = info->Num;
+				info->Num	  = calcStr();
+				info->lastAns = info->Num;
+			}
+			else
+			{
+				info->Num = "表达式错误过多！";
+			}
 
 			flag->calcFlag	 = true;
 			flag->getLastAns = true;
@@ -397,26 +405,34 @@ void myCalc::handleCtrl(const CtrlType& _Type)
 			break;
 		}
 
-		case CtrlType::_TypeErr:
+		case _TypeErr:
 		{
 			break;
 		}
 
-		case CtrlType::_EXIT:
+		case _EXIT:
 		{
 			_STD exit(EXIT_SUCCESS);
 		}
 
 		default:
+		{
 			break;
+		}
 	}
 }
 
-// 3.1 记录数据
+// 3.1 记录右值数据
 void myCalc::takeData(_qstr&& Data, const BtnType& _Type, bool ClearData)
 {
-	Data = _STD move(Data);
+	auto tmp { _STD move(Data) };
 
+	takeData(tmp, _Type, ClearData);
+}
+
+// 3.1 记录左值数据
+void myCalc::takeData(_qstr& Data, const BtnType& _Type, bool ClearData)
+{
 	if (Data.isEmpty() || _Type == _PUBINFO_ERROR)
 	{
 		return;
@@ -467,26 +483,27 @@ void myCalc::takeData(_qstr&& Data, const BtnType& _Type, bool ClearData)
 	}
 }
 
-void myCalc::takeData(_qstr& Data, const BtnType& _Type, bool ClearData)
-{
-	takeData(_STD move(Data), _Type, ClearData);
-}
-
 // 4.1 最终计算前进行简单检查
-void myCalc::inspectionStr_FinallyCalc(void)
+bool myCalc::inspectionStr_FinallyCalc(void)
 {
 	// case1：缺少最后的右括号
-	if (flag->bkFlag >= 1 && flag->bkFlag <= 5)
+	if (flag->bkFlag >= 1 && flag->bkFlag <= 8)
 	{
 		while (flag->bkFlag-- > 0)
 		{
 			onInspectionStr(_make_ce(")", BtnType::_RightBK));
 		}
+
+		return false;
+	}
+	else
+	{
+		return true;
 	}
 }
 
 // 4.2 获取一个高级操作符表达式
-_qstr myCalc::getAdvancedStr(const _qstr& Event, const _qstr& keyNum) const
+_qstr myCalc::getAdvancedStr(const _qstr& Event, const _qstr& keyNum) const noexcept
 {
 	_qstr showStr = "";
 
@@ -607,7 +624,7 @@ _qstr myCalc::calcStr(_def_qvec() & NumsVec, _def_qsk() & OperSk)
 void myCalc::calcBracketStr(void)
 {
 	int basicOperNums = 0;
-	for (auto i = info->HouZhui.rbegin(); i != info->HouZhui.rend(); i++)
+	for (auto i = info->HouZhui.rbegin(); i != info->HouZhui.rend(); ++i)
 	{
 		if (isBasicOper(*i))
 		{
@@ -630,18 +647,20 @@ void myCalc::calcBracketStr(void)
 }
 
 // 5.1 显示结果
-void myCalc::showInfo(const ClickEvent& Event)
+void myCalc::showInfo(const ClickEvent& Event) noexcept
 {
 	switch (Event.second)
 	{
-		case BtnType::_Num:
+		using enum BtnType;
+
+		case _Num:
 		{
 			if (ui.line2->text() == "0" && Event.first != ".")
 			{
 				ui.line2->clear();
 			}
 			else if (ui.line2->text() != "0" && info->lastTimeEvent->first != "DEL" &&
-					 info->lastTimeEvent->first != "±" && info->lastTimeEvent->second != BtnType::_Num)
+					 info->lastTimeEvent->first != "±" && info->lastTimeEvent->second != _Num)
 			{
 				ui.line2->clear();
 			}
@@ -658,7 +677,7 @@ void myCalc::showInfo(const ClickEvent& Event)
 			break;
 		}
 
-		case BtnType::_LeftBK:
+		case _LeftBK:
 		{
 			ui.line1->setText(info->ZhongZhuiStr + "  ");
 			ui.line2->setText("0");
@@ -666,7 +685,7 @@ void myCalc::showInfo(const ClickEvent& Event)
 			break;
 		}
 
-		case BtnType::_RightBK:
+		case _RightBK:
 		{
 			ui.line1->setText(info->ZhongZhuiStr + "  ");
 			formatDisplaying(info->HouZhui.back());
@@ -674,7 +693,7 @@ void myCalc::showInfo(const ClickEvent& Event)
 			break;
 		}
 
-		case BtnType::_BasicOper:
+		case _BasicOper:
 		{
 			if (Event.first == "±")
 			{
@@ -688,14 +707,14 @@ void myCalc::showInfo(const ClickEvent& Event)
 			break;
 		}
 
-		case BtnType::_AdvancedOper:
+		case _AdvancedOper:
 		{
 			showAdvancedOperInfo(Event);
 
 			break;
 		}
 
-		case BtnType::_Ctrl:
+		case _Ctrl:
 		{
 			if (Event.first == "=")
 			{
@@ -707,7 +726,9 @@ void myCalc::showInfo(const ClickEvent& Event)
 		}
 
 		default:
+		{
 			break;
+		}
 	}
 }
 
