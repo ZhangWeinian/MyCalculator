@@ -236,32 +236,32 @@ public:
 	}
 };
 
-_NODISCARD inline bool operator==(const Sign num1, ClearSign num2)
+_NODISCARD inline explicit bool operator==(const Sign num1, ClearSign num2)
 {
 	return _cove_ushort(num1) == _cove_ushort(num2);
 }
 
-_NODISCARD inline bool operator!=(const Sign num1, ClearSign num2)
+_NODISCARD inline explicit bool operator!=(const Sign num1, ClearSign num2)
 {
 	return _cove_ushort(num1) != _cove_ushort(num2);
 }
 
-_NODISCARD inline bool operator==(const Type num1, BtnType num2)
+_NODISCARD inline explicit bool operator==(const Type num1, BtnType num2)
 {
 	return _cove_ushort(num1) == _cove_ushort(num2);
 }
 
-_NODISCARD inline bool operator!=(const Type num1, BtnType num2)
+_NODISCARD inline explicit bool operator!=(const Type num1, BtnType num2)
 {
 	return _cove_ushort(num1) != _cove_ushort(num2);
 }
 
-_NODISCARD inline bool operator==(const BtnType num1, Type num2)
+_NODISCARD inline explicit bool operator==(const BtnType num1, Type num2)
 {
 	return _cove_ushort(num1) == _cove_ushort(num2);
 }
 
-_NODISCARD inline bool operator!=(const BtnType num1, Type num2)
+_NODISCARD inline explicit bool operator!=(const BtnType num1, Type num2)
 {
 	return _cove_ushort(num1) != _cove_ushort(num2);
 }
