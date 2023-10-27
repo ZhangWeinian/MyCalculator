@@ -137,21 +137,21 @@ class BasicInformation
 public:
 
 	/*--DATA--*/
-	_def_ce() thisTimeEvent = _init_ce(); // 此次获取的事件
-	_def_ce() lastTimeEvent = _init_ce(); // 上次获取的事件
+	_def_ce() thisTimeEvent { _init_ce() }; // 此次获取的事件
+	_def_ce() lastTimeEvent { _init_ce() }; // 上次获取的事件
 
-	_qstr Num				  = "";		  // 一个完整的数字
-	_qstr Symbol			  = "";		  // 一个确定的符号
-	_qstr lastAns			  = "";		  // 一次有效的、完整的、按“=”后的计算结果
-	_qstr lastAdvancedOperStr = "";		  // 上一次的高级运算符表达式
-	_qstr lastAdvancedOper	  = "";		  // 上一个高级算符
+	_qstr Num { "" };						// 一个完整的数字
+	_qstr Symbol { "" };					// 一个确定的符号
+	_qstr lastAns { "" };					// 一次有效的、完整的、按“=”后的计算结果
+	_qstr lastAdvancedOper { "" };			// 上一个高级算符
+	_qstr lastAdvancedOperStr { "" };		// 上一次的高级运算符表达式
 
-	_def_qvec() HouZhui	 = {};			  // 后缀表达式
-	_def_qsk() CalcStack = {};			  // 操作栈
+	_def_qvec() HouZhui {};					// 后缀表达式
+	_def_qsk() CalcStack {};				// 操作栈
 
-	_qstr ZhongZhuiStr = "";			  // 中缀表达式（字符串）
+	_qstr ZhongZhuiStr { "" };				// 中缀表达式（字符串）
 
-	short BasicOperNums = 0;			  // 括号中的基础操作符计数
+	short BasicOperNums { 0 };				// 括号中的基础操作符计数
 
 	/*--Fun--*/
 	_NORETURN BasicInformation(void) = default;
@@ -166,17 +166,14 @@ public:
 
 		if (_Sign == ClearSign::_All)
 		{
-			Symbol		 = "";
-			ZhongZhuiStr = "";
+			Symbol		  = "";
+			ZhongZhuiStr  = "";
+			BasicOperNums = 0;
 
 			HouZhui	  = {};
 			CalcStack = {};
 
 			lastTimeEvent = _init_ce();
-
-			Symbol = "";
-
-			BasicOperNums = 0;
 		}
 
 		// 特别的，lastAns不会被清除，除非析构
@@ -188,23 +185,23 @@ class ImportantFlag
 public:
 
 	/*--DATA--*/
-	unsigned short bkFlag = 0;	 // 括号匹配计数
+	unsigned short bkFlag = 0;	   // 括号匹配计数
 
-	bool calcFlag		= false; // 是否完成一次完整的运算
-	bool numSignFlag	= true;	 // 正负号调整。true：调整结束；false：正在调整
-	bool operFlag		= true;	 // 运算符调整。true：调整结束；false：正在调整
-	bool numGetOverFlag = true;	 // 是否获取到一个完整的数字。true；已获取；false：未获取
-	bool dPointFlag		= false; // 是否拥有小数点
+	bool calcFlag { false };	   // 是否完成一次完整的运算
+	bool operFlag { true };		   // 运算符调整。true：调整结束；false：正在调整
+	bool dPointFlag { false };	   // 是否拥有小数点。true：有；false：无
+	bool numSignFlag { true };	   // 正负号调整。true：调整结束；false：正在调整
+	bool numGetOverFlag { true };  // 是否获取到一个完整的数字。true；已获取；false：未获取
 
-	bool calcStackEmpty = false; // 后缀运算时，操作栈异常为空：缺少操作数
+	bool calcStackEmpty { false }; // 后缀运算时，操作栈异常为空：缺少操作数
 
-	bool fromKeyboard = false;	 // 此次点击来自键盘
-	bool fromClick	  = false;	 // 此次点击来自鼠标
+	bool fromKeyboard { false };   // 此次点击来自键盘
+	bool fromClickEvt { false };   // 此次点击来自鼠标
 
-	bool charMode = false;		 // 是否进入字符模式
+	bool charMode { false };	   // 是否进入字符模式
 
-	bool haveDecimal = false;	 // 有小数点时，标准数字处理只执行一次
-	bool getLastAns	 = false;	 // 是否已经到了获取最终答案的时刻
+	bool haveDecimal { false };	   // 有小数点时，标准数字处理只执行一次
+	bool getLastAns { false };	   // 是否已经到了获取最终答案的时刻
 
 	/*--Fun--*/
 	_NORETURN ImportantFlag(void) = default;
@@ -222,16 +219,14 @@ public:
 		{
 			bkFlag = 0;
 
-			fromClick	 = false;
+			fromClickEvt = false;
 			fromKeyboard = false;
+			charMode	 = false;
+			getLastAns	 = false;
 
 			calcFlag	   = false;
 			operFlag	   = true;
 			calcStackEmpty = false;
-
-			charMode = false;
-
-			getLastAns = false;
 		}
 	}
 };
@@ -249,9 +244,9 @@ _NODISCARD inline bool operator==(const Type num1, BtnType num2) noexcept
 // _FLOAT 转 _qstr
 _NODISCARD inline _qstr getQstr(const FLOAT& Num) noexcept
 {
-	_str tmp { _STD to_string(Num) };
+	_str tmp { _move(_STD to_string(Num)) };
 
-	if (auto dpoint = tmp.find('.'); dpoint != -1)
+	if (auto dpoint { tmp.find('.') }; dpoint != -1)
 	{
 		while (tmp.back() == '0')
 		{
@@ -267,27 +262,37 @@ _NODISCARD inline _qstr getQstr(const FLOAT& Num) noexcept
 	return _qstr::fromStdString(tmp);
 }
 
+_NODISCARD inline void getQstr(const FLOAT& Num, _qstr& ans) noexcept
+{
+	ans = _move(getQstr(Num));
+}
+
 // _qstr 转 _FLOAT
 _NODISCARD inline FLOAT getFloat(const _qstr& Str) noexcept
 {
-	return _STD stold(Str.toStdString());
+	return stold(Str.toStdString());
+}
+
+_NODISCARD inline void getFloat(const _qstr& Str, FLOAT& ans) noexcept
+{
+	ans = _move(getFloat(Str));
 }
 
 // 删除 _qstr 的最后一个字符（如果是汉字，则删除最后一个汉字）
 _NORETURN inline void pop_back(_qstr& Str) noexcept
 {
-	if (auto len = Str.size() - 1; len >= 0)
+	if (auto len { Str.size() - 1 }; len >= 0)
 	{
-		Str = _STD move(Str.left(len));
+		Str = _move(Str.left(len));
 	}
 }
 
 // 删除 _qstr 的第一个字符（如果是汉字，则删除第一个汉字）
 _NORETURN inline void pop_front(_qstr& Str) noexcept
 {
-	if (auto len = Str.size() - 1; len >= 0)
+	if (auto len { Str.size() - 1 }; len >= 0)
 	{
-		Str = _STD move(Str.right(len));
+		Str = _move(Str.right(len));
 	}
 }
 
@@ -307,5 +312,16 @@ _NORETURN inline void reverse_qstr(_qstr& Str) noexcept
 	_qstr ans { "" };
 	_RG	  for_each(Str.rbegin(), Str.rend(), [&ans](const auto& i) { ans += i; });
 
-	Str = _STD move(ans);
+	Str = _move(ans);
+}
+
+// isEmpty()
+_NODISCARD inline bool _isEmpty(const _qstr& str) noexcept
+{
+	return str.size() == 0;
+}
+
+_NODISCARD inline bool _isEmpty(_str&& str) noexcept
+{
+	return _isEmpty(_move(str));
 }

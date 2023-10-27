@@ -8,8 +8,9 @@
 ## 使用前的注意事项
 如果自行编译源码，则编译环境需要有如下支持：
 * Windows SDK 10.0.22621.0
-* Qt6
-* boost/multiprecision（非必要，默认不使用 boost/multiprecision 相关内容。可以通过设置 HighPrecisionOperations.h 文件中的宏定义 _use_BOOST 自行启用）
+* 最新版本的 Qt6
+* [ 注意：此内容已经删除，原因是几乎不会用到它，以后会加入到 “字符模式” 中 ]
+boost/multiprecision（非必要，默认不使用 boost/multiprecision 相关内容。可以通过设置 HighPrecisionOperations.h 文件中的宏定义 _use_BOOST 自行启用）
 * spdlog（非必要，目前日志系统尚未完成，后续将逐步加入）
 
 如果只执行发布的 .exe 可执行文件，则执行环境需要有如下支持：

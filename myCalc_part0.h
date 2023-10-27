@@ -36,6 +36,7 @@
 #endif // !_NODISCARD_MSG
 
 
+using _size_t = qsizetype;
 
 using Type = unsigned _int16;
 using Sign = unsigned _int16;
@@ -47,7 +48,7 @@ using FLOAT = long double;
 
 using _str		 = ::std::string;
 using _qstr		 = QString;
-using BKPosition = QPair<size_t, size_t>;
+using BKPosition = QPair<_size_t, _size_t>;
 
 constexpr Type _PUBINFO_ERROR = USHRT_MAX;
 constexpr LL   _NUM_MAX		  = LLONG_MAX;
@@ -73,3 +74,23 @@ constexpr LL   _NUM_MIN		  = LLONG_MIN;
 #define _init_type(init_content, init_type) static_cast<init_type>(init_content)
 #define _init_uptr(CE_Type, ...)			::std::make_unique<CE_Type>(##__VA_ARGS__)
 #define _init_ce(...)						::std::make_unique<ClickEvent>(##__VA_ARGS__)
+
+
+
+#define _move(cont) ::std::move(cont)
+
+#define _calc_exit(cont)               \
+	{                                  \
+		if (cont == 1)                 \
+		{                              \
+			::std::exit(EXIT_FAILURE); \
+		}                              \
+		else if (cont == 0)            \
+		{                              \
+			::std::exit(EXIT_SUCCESS); \
+		}                              \
+		else                           \
+		{                              \
+			::std::exit(cont);         \
+		}                              \
+	}

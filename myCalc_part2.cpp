@@ -3,24 +3,6 @@
 #include "./myCalc.h"
 #include <ui_myCalc.h>
 
-#include <algorithm>
-#include <cmath>
-#include <memory>
-#include <qabstractbutton.h>
-#include <qbuttongroup.h>
-#include <qchar.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qlist.h>
-#include <qnamespace.h>
-#include <qobject.h>
-#include <qpushbutton.h>
-#include <qstack.h>
-#include <qstring.h>
-#include <qwidget.h>
-#include <utility>
-#include <version>
-
 // 基础功能初始化
 void myCalc::initUI(void) noexcept
 {
@@ -108,36 +90,24 @@ void myCalc::showMode(const ShowModeSign& _Sign) noexcept
 		}
 
 		default:
-		{
 			break;
-		}
 	}
 }
 
 // 判断基础操作符
 bool myCalc::isBasicOper(const _qstr& BasicOperEvent) const noexcept
 {
-	if (BasicOperEvent.isEmpty())
-	{
-		return false;
-	}
-	else
-	{
-		return _RG any_of(TheBasicOper, [&BasicOperEvent](const auto& i) { return i == BasicOperEvent; });
-	}
+	return BasicOperEvent.isEmpty() ?
+			   false :
+			   _RG any_of(TheBasicOper, [&BasicOperEvent](const auto& i) { return i == BasicOperEvent; });
 }
 
 // 判断高级操作符
 bool myCalc::isAdvancedOper(const _qstr& AdvancedOperEvent) const noexcept
 {
-	if (AdvancedOperEvent.isEmpty())
-	{
-		return false;
-	}
-	else
-	{
-		return _RG any_of(TheAdvancedOper, [&AdvancedOperEvent](const auto& i) { return i == AdvancedOperEvent; });
-	}
+	return AdvancedOperEvent.isEmpty() ?
+			   false :
+			   _RG any_of(TheAdvancedOper, [&AdvancedOperEvent](const auto& i) { return i == AdvancedOperEvent; });
 }
 
 // 判断数字
@@ -148,31 +118,20 @@ bool myCalc::isNum(const _qstr& NumEvent) const noexcept
 		return _RG any_of(TheNums, [&i](const auto& j) { return i == j; });
 	};
 
-	if (NumEvent.isEmpty())
-	{
-		return false;
-	}
-	else if (NumEvent.size() == 1)
+	if (NumEvent.size() == 1)
 	{
 		return funTmp(NumEvent.front());
 	}
 	else
 	{
-		return _RG all_of(NumEvent, [&](const auto& i) { return i == '-' || funTmp(i); });
+		return NumEvent.isEmpty() ? false : _RG all_of(NumEvent, [&](const auto& i) { return i == '-' || funTmp(i); });
 	}
 }
 
 // 判断控制符
 bool myCalc::isCtrl(const _qstr& CtrlEvent) const noexcept
 {
-	if (CtrlEvent.isEmpty())
-	{
-		return false;
-	}
-	else
-	{
-		return _RG any_of(TheCtrl, [&CtrlEvent](const auto& i) { return i == CtrlEvent; });
-	}
+	return CtrlEvent.isEmpty() ? false : _RG any_of(TheCtrl, [&CtrlEvent](const auto& i) { return i == CtrlEvent; });
 }
 
 // 判断来自键盘的事件是否应该响应
@@ -184,7 +143,7 @@ bool myCalc::isCorresponding(const int QtKey) const
 // 获取键盘事件转换后的文本
 _qstr myCalc::getCorrespondingStr(const int StrKey) const noexcept
 {
-	_qstr ans = "";
+	_qstr ans { "" };
 
 	_RG for_each(TheCorrespondingStr,
 				 [&](const auto& i)
@@ -218,84 +177,66 @@ _qstr myCalc::getCorrespondingNum(const int NumKey) const noexcept
 // 识别按钮类型
 BtnType myCalc::getBtnType(const _qstr& BtnEvent) const noexcept
 {
-	try
-	{
-		using enum BtnType;
+	using enum BtnType;
 
-		if (isNum(BtnEvent))
+	if (isNum(BtnEvent))
+	{
+		return _Num;
+	}
+	else if (isBasicOper(BtnEvent))
+	{
+		if (BtnEvent == "( )" || BtnEvent == "(")
 		{
-			return _Num;
+			return _LeftBK;
 		}
-		else if (isBasicOper(BtnEvent))
+		else if (BtnEvent == ")")
 		{
-			if (BtnEvent == "( )" || BtnEvent == "(")
-			{
-				return _LeftBK;
-			}
-			else if (BtnEvent == ")")
-			{
-				return _RightBK;
-			}
-			else
-			{
-				return _BasicOper;
-			}
-		}
-		else if (isAdvancedOper(BtnEvent))
-		{
-			return _AdvancedOper;
-		}
-		else if (isCtrl(BtnEvent))
-		{
-			return _Ctrl;
+			return _RightBK;
 		}
 		else
 		{
-			throw _TypeErr;
+			return _BasicOper;
 		}
 	}
-	catch (const BtnType& errCode)
+	else if (isAdvancedOper(BtnEvent))
 	{
-		return errCode;
+		return _AdvancedOper;
 	}
+	else if (isCtrl(BtnEvent))
+	{
+		return _Ctrl;
+	}
+
+	return _TypeErr;
 }
 
 // 识别控制类型
 CtrlType myCalc::getCtrlType(const _qstr& CtrlEvent) const noexcept
 {
-	try
-	{
-		using enum CtrlType;
+	using enum CtrlType;
 
-		if (CtrlEvent == "C")
-		{
-			return _C;
-		}
-		else if (CtrlEvent == "CE")
-		{
-			return _CE;
-		}
-		else if (CtrlEvent == "DEL")
-		{
-			return _DEL;
-		}
-		else if (CtrlEvent == "=")
-		{
-			return _EQT;
-		}
-		else if (CtrlEvent == "EXIT")
-		{
-			return _EXIT;
-		}
-		else
-		{
-			throw _TypeErr;
-		}
-	}
-	catch (const CtrlType& errCode)
+	if (CtrlEvent == "C")
 	{
-		return errCode;
+		return _C;
 	}
+	else if (CtrlEvent == "CE")
+	{
+		return _CE;
+	}
+	else if (CtrlEvent == "DEL")
+	{
+		return _DEL;
+	}
+	else if (CtrlEvent == "=")
+	{
+		return _EQT;
+	}
+	else if (CtrlEvent == "EXIT")
+	{
+		return _EXIT;
+	}
+
+	return _TypeErr;
 }
 
 // 识别显示类型
@@ -315,10 +256,8 @@ ShowModeSign myCalc::getBtnShowType(void) const noexcept
 	{
 		return _BC;
 	}
-	else
-	{
-		return _cove_type(_PUBINFO_ERROR, ShowModeSign);
-	}
+
+	return _cove_type(_PUBINFO_ERROR, ShowModeSign);
 }
 
 // 获取运算符优先级
@@ -339,7 +278,7 @@ bool myCalc::getPriority(const _qstr& Oper1, const _qstr& Oper2) const noexcept
 		}
 	}
 
-	return priOper1 > priOper2;
+	return (priOper1 > priOper2);
 }
 
 // 处理括号
@@ -368,7 +307,7 @@ void myCalc::handleBkEvent(const _qstr& BkEvent)
 }
 
 // 处理数字正负号
-bool myCalc::handleNumSign(void)
+bool myCalc::handleNumSign(void) noexcept
 {
 	if (info->Num == "0") // 不对0作正负号调整
 	{
@@ -419,19 +358,21 @@ void myCalc::handleDelete(void)
 		}
 	}
 
-	info->Num = clearCommas(ui.line2->text());
+	info->Num = _move(clearCommas(ui.line2->text()));
 }
 
 // 基础操作符入栈
 void myCalc::basicOperPushStack(const _qstr& BasicOperEvent)
 {
+	bool check { true };
+
 	if (BasicOperEvent == "(")
 	{
 		info->CalcStack.push(BasicOperEvent);
 
-		return;
+		check = false;
 	}
-	else if (BasicOperEvent == ")")
+	else if (check && (BasicOperEvent == ")"))
 	{
 		while (info->CalcStack.top() != "(")
 		{
@@ -442,27 +383,30 @@ void myCalc::basicOperPushStack(const _qstr& BasicOperEvent)
 
 		calcBracketStr();
 
-		return;
+		check = false;
 	}
 
-	if (!info->CalcStack.isEmpty())
+	if (check)
 	{
-		auto& tmp = info->CalcStack.top();
-		while (getPriority(tmp, BasicOperEvent))
+		if (!info->CalcStack.isEmpty())
 		{
-			info->HouZhui.push_back(info->CalcStack.pop());
-			tmp = info->CalcStack.top();
+			auto& tmp { info->CalcStack.top() };
+			while (getPriority(tmp, BasicOperEvent))
+			{
+				info->HouZhui.push_back(info->CalcStack.pop());
+				tmp = info->CalcStack.top();
+			}
 		}
-	}
 
-	info->CalcStack.push(BasicOperEvent);
+		info->CalcStack.push(BasicOperEvent);
+	}
 }
 
 // 计算高级操作符表达式
 _qstr myCalc::calcAdvancedOperData(const _qstr& Data, const _qstr& Oper) const
 {
-	FLOAT numAns = 0.0L;
-	auto  numTmp = _cove_type(getFloat(Data), FLOAT);
+	FLOAT numAns { 0.L };
+	auto  numTmp { _cove_type(getFloat(Data), FLOAT) };
 
 	try
 	{
@@ -527,17 +471,17 @@ _qstr myCalc::calcAdvancedOperData(const _qstr& Data, const _qstr& Oper) const
 			case _Num_isNegative:
 			case _Num_isZero:
 			{
-				return "无效输入";
+				return _qstr("无效输入");
 			}
 
 			case _Num_OutOfRange:
 			{
-				return "超出范围";
+				return _qstr("超出范围");
 			}
 
 			default:
 			{
-				return "myCalc::calcAdvancedOperData() ERR!";
+				return _qstr("myCalc::calcAdvancedOperData() ERR!");
 			}
 		}
 	}
@@ -546,20 +490,20 @@ _qstr myCalc::calcAdvancedOperData(const _qstr& Data, const _qstr& Oper) const
 // 获取阶乘
 FLOAT myCalc::getFactorial(const _qstr& Data) const noexcept
 {
-	auto num = _cove_type(getFloat(Data), INT);
-	LL	 ans = 1LL;
+	auto  num { _cove_type(getFloat(Data), INT) };
+	FLOAT ans { 1.L };
 
 	if (num < 0)
 	{
-		return -1L; //未定义负数的阶乘
+		return -1.L; //未定义负数的阶乘
 	}
 	else if (num == 0)
 	{
-		return 1L;
+		return 1.L;
 	}
 	else if (num >= 20)
 	{
-		return -2L; //计算结果超出范围
+		return -2.L; //计算结果超出范围
 	}
 	else
 	{
@@ -568,7 +512,7 @@ FLOAT myCalc::getFactorial(const _qstr& Data) const noexcept
 			ans *= i;
 		}
 
-		return _cove_type(ans, FLOAT);
+		return ans;
 	}
 }
 
@@ -579,25 +523,25 @@ _qstr myCalc::getDisplayingStr(void) const noexcept
 }
 
 // 标准数字显示
-void myCalc::formatDisplaying(const _qstr& Num)
+void myCalc::formatDisplaying(const _qstr& Num) noexcept
 {
-	auto ShowStr = Num.isEmpty() ? getDisplayingStr() : Num;
+	auto ShowStr { Num.isEmpty() ? _move(getDisplayingStr()) : Num };
 
 	if (!flag->haveDecimal || flag->getLastAns)
 	{
-		bool  haveNumSign = false;
-		bool  haveDecimal = false;
-		_qstr decimal	  = "";
+		bool  haveNumSign { false };
+		bool  haveDecimal { false };
+		_qstr decimal { "" };
 
 		if (ShowStr.front() == '-')
 		{
 			pop_front(ShowStr);
 			haveNumSign = true;
 		}
-		if (auto i = ShowStr.indexOf('.'); i != -1)
+		if (auto i { ShowStr.indexOf('.') }; i != -1)
 		{
-			decimal = ShowStr.mid(i);
-			ShowStr = ShowStr.left(i);
+			decimal = _move(ShowStr.mid(i));
+			ShowStr = _move(ShowStr.left(i));
 
 			haveDecimal		  = true;
 			flag->haveDecimal = true;
@@ -605,11 +549,11 @@ void myCalc::formatDisplaying(const _qstr& Num)
 
 		if (ShowStr.size() >= 4)
 		{
-			ShowStr = clearCommas(ShowStr);
+			ShowStr = _move(clearCommas(ShowStr));
 			reverse_qstr(ShowStr);
 
 			auto len = ShowStr.size();
-			for (auto i = 3, j = 0; i < len; i += 3, j++)
+			for (_size_t i { 3 }, j { 0 }; i < len; i += 3, j++)
 			{
 				ShowStr.insert(i + j, ',');
 			}
@@ -633,7 +577,7 @@ void myCalc::formatDisplaying(const _qstr& Num)
 // 清理数字中的逗号
 _qstr myCalc::clearCommas(const _qstr& Str) const noexcept
 {
-	_qstr ans = "";
+	_qstr ans { "" };
 	for (const auto& i: Str)
 	{
 		if (i != ',')
@@ -646,7 +590,7 @@ _qstr myCalc::clearCommas(const _qstr& Str) const noexcept
 }
 
 // 配合 C/CE，清除内容
-void myCalc::clear(const ClearSign& _Sign)
+void myCalc::clear(const ClearSign& _Sign) noexcept
 {
 	clearLastAdvancedStr();
 
@@ -662,7 +606,7 @@ void myCalc::clear(const ClearSign& _Sign)
 }
 
 // 清除最后一个高级操作符表达式
-void myCalc::clearLastAdvancedStr(void)
+void myCalc::clearLastAdvancedStr(void) noexcept
 {
 	info->lastAdvancedOperStr.clear();
 	info->Num.clear();
@@ -676,7 +620,7 @@ void myCalc::clearLastAdvancedStr(void)
 // 配合基础操作符，进行简单计算
 _qstr myCalc::simpleCalc(const FLOAT& OperNum2, const _qstr& OperSymbol, const FLOAT& OperNum1) const noexcept
 {
-	FLOAT ansNum = 0.0L;
+	FLOAT ansNum { 0.L };
 
 	try
 	{
@@ -710,21 +654,21 @@ _qstr myCalc::simpleCalc(const FLOAT& OperNum2, const _qstr& OperSymbol, const F
 	{
 		if (errCode == AdvancedOperErrCode::_Num_isZero)
 		{
-			return "被除数为0";
+			return _qstr("被除数为0");
 		}
 		else
 		{
-			return "myCalc::simpleCalc() ERR!";
+			return _qstr("myCalc::simpleCalc() ERR!");
 		}
 	}
 }
 
 // 配合高级操作符，更新显示文本
-bool myCalc::updataZhongZhuiStr(void)
+bool myCalc::updataZhongZhuiStr(void) noexcept
 {
-	auto [begin, end] = findBracketStr(_NeedPosition);
+	const auto& [begin, end] { _move(findBracketStr(_NeedPosition)) };
 
-	if (begin == 0 && end == 0)
+	if ((begin == 0) && (end == 0))
 	{
 		return false;
 	}
@@ -736,16 +680,16 @@ bool myCalc::updataZhongZhuiStr(void)
 }
 
 // 寻找最小括号表达式位置
-BKPosition myCalc::findBracketStr(const BKPosition&)
+BKPosition myCalc::findBracketStr(const BKPosition&) noexcept
 {
-	size_t strB	  = info->ZhongZhuiStr.size() - 1;
-	size_t strE	  = strB - 1;
-	size_t bkNums = 0;
-	size_t tmp	  = strB;
+	_size_t strB { info->ZhongZhuiStr.size() - 1 };
+	_size_t strE { strB - 1 };
+	_size_t temp { strB };
+	_size_t bkNums { 0 };
 
 	try
 	{
-		for (auto i = info->ZhongZhuiStr.rbegin() + 1; i != info->ZhongZhuiStr.rend(); i++)
+		for (auto i { info->ZhongZhuiStr.rbegin() + 1 }; i != info->ZhongZhuiStr.rend(); i++)
 		{
 			if (*i == ')')
 			{
@@ -758,12 +702,12 @@ BKPosition myCalc::findBracketStr(const BKPosition&)
 
 			if (bkNums == 0)
 			{
-				strB = tmp - 1;
+				strB = temp - 1;
 				break;
 			}
 			else
 			{
-				tmp--;
+				temp--;
 			}
 		}
 
@@ -776,7 +720,7 @@ BKPosition myCalc::findBracketStr(const BKPosition&)
 			return { strB, strE };
 		}
 	}
-	catch (const StackErrCode&)
+	catch (const StackErrCode)
 	{
 		ui.line2->setText("括号不匹配");
 		flag->calcFlag = true;
@@ -788,25 +732,28 @@ BKPosition myCalc::findBracketStr(const BKPosition&)
 // 配合计算，获取栈顶数字
 FLOAT myCalc::getOperNum(_def_qsk() & OperSk) noexcept
 {
+	FLOAT ans { 0.L };
+
 	if (OperSk.isEmpty())
 	{
 		flag->calcStackEmpty = true;
-		return 0.0L;
 	}
 	else
 	{
-		auto ans = OperSk.pop();
-		if (ans.front() == '(')
+		auto temp { OperSk.pop() };
+		if (temp.front() == '(')
 		{
-			pop_back_front(ans);
+			pop_back_front(temp);
 
-			return getFloat("-" + ans);
+			getFloat("-" + temp, ans);
 		}
 		else
 		{
-			return getFloat(ans);
+			getFloat(temp, ans);
 		}
 	}
+
+	return ans;
 }
 
 // 防止重复记录
@@ -816,25 +763,25 @@ bool myCalc::dontDuplicateRecord(const ClickEvent& Event) const noexcept
 	{
 		return true;
 	}
-	else if (Event.second == BtnType::_Num || Event.second == BtnType::_AdvancedOper)
+
+	if (Event.second == BtnType::_Num || Event.second == BtnType::_AdvancedOper)
 	{
 		return true;
 	}
-	else if (Event.first == "±" || Event.first == "( )" || Event.first == "(" || Event.first == ")" ||
-			 Event.first == "DEL" || Event.first == "#")
+
+	if (Event.first == "±" || Event.first == "( )" || Event.first == "(" || Event.first == ")" ||
+		Event.first == "DEL" || Event.first == "#")
 	{
 		return true;
 	}
-	else
-	{
-		return false;
-	}
+
+	return false;
 }
 
 // line2 只能显示数字
-void myCalc::setLine2Displaying(void)
+void myCalc::setLine2Displaying(void) noexcept
 {
-	_qstr tmp = getDisplayingStr();
+	auto tmp { _move(getDisplayingStr()) };
 
 	while (!isNum(tmp.back()))
 	{
@@ -875,14 +822,14 @@ void myCalc::thePreprocessing(const ClickEvent& Event) noexcept
 			takeData(info->Num, _AdvancedOper);
 		}
 
-		if (Event.second != _Num && Event.second != _AdvancedOper)
+		if ((Event.second != _Num) && (Event.second != _AdvancedOper))
 		{
 			info->ZhongZhuiStr += (info->lastAdvancedOperStr + " ");
 		}
 	}
 
 	// 预处理3：调整显示模式
-	if (Event.first != "C" && getBtnShowType() == ShowModeSign::_BC)
+	if ((Event.first != "C") && (getBtnShowType() == ShowModeSign::_BC))
 	{
 		showMode(ShowModeSign::_BCE);
 	}

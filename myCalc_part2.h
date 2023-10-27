@@ -23,9 +23,9 @@ private:
 	/*--Data--*/
 	Ui::myCalcClass ui;
 
-	_def_uptr(BasicInformation) info	= _init_uptr(BasicInformation);	  // 基础数据集合
-	_def_uptr(ImportantFlag) flag		= _init_uptr(ImportantFlag);	  // 计算过程中的重要标识符
-	_def_uptr(QButtonGroup) buttonGroup = _init_uptr(QButtonGroup, this); // 存储按钮的组
+	_def_uptr(BasicInformation) info { _init_uptr(BasicInformation) };		// 基础数据集合
+	_def_uptr(ImportantFlag) flag { _init_uptr(ImportantFlag) };			// 计算过程中的重要标识符
+	_def_uptr(QButtonGroup) buttonGroup { _init_uptr(QButtonGroup, this) }; // 存储按钮的组
 
 	// _def_uptr(myCalc_CharMode) charModeWindow; // 字符模式
 
@@ -64,18 +64,18 @@ private:
 	_NODISCARD bool getPriority(const _qstr& Oper1, const _qstr& Oper2) const noexcept;
 
 	// 分别处理数字、基础操作符、高级操作符、括号、控制符、删除键
-	void		   handleNum(const _qstr& NumEvent);
-	void		   handleBasicOper(const _qstr& BasicOperEvent);
+	_NORETURN void handleNum(const _qstr& NumEvent);
+	_NORETURN void handleBasicOper(const _qstr& BasicOperEvent);
 	_NORETURN void handleAdvancedOper(const _qstr& AdvancedOperEvent);
 	_NORETURN void handleBkEvent(const _qstr& BkEvent);
 	_NORETURN void handleCtrl(const CtrlType& _Type);
 	_NORETURN void handleDelete(void);
 
 	// 处理正负号。定义：true--可以继续；false--结束基础操作符处理
-	_NODISCARD bool handleNumSign(void);
+	_NODISCARD bool handleNumSign(void) noexcept;
 
 	// 基本操作符入栈
-	void basicOperPushStack(const _qstr& BasicOperEvent);
+	_NORETURN void basicOperPushStack(const _qstr& BasicOperEvent);
 
 	// 高级操作符计算
 	_NODISCARD _qstr calcAdvancedOperData(const _qstr& Data, const _qstr& Oper) const;
@@ -87,14 +87,14 @@ private:
 	_NORETURN void inspectionStr_InputTime(const ClickEvent& ThisTimeEvent);
 
 	// 获取计算结果
-	_NODISCARD _qstr calcStr(void);
-	_NODISCARD _qstr calcStr(_def_qvec() & NumsVec, _def_qsk() & OperSk);
+	_NODISCARD _qstr calcStr(void) noexcept;
+	_NODISCARD _qstr calcStr(_def_qvec() & NumsVec, _def_qsk() & OperSk) noexcept;
 
 	// 获取当前显示在输入栏中的文本
 	_NODISCARD _qstr getDisplayingStr(void) const noexcept;
 
 	// 输入一个“）”时，计算一个最小的、完整括号表达式的值
-	void calcBracketStr(void);
+	_NORETURN void calcBracketStr(void);
 
 	// 获取CalcStack栈顶的操作数
 	_NODISCARD FLOAT getOperNum(_def_qsk() & OperSk) noexcept;
@@ -106,34 +106,34 @@ private:
 	_NORETURN void showInfo(const ClickEvent& Event) noexcept;
 
 	// 标准数字显示
-	_NORETURN void formatDisplaying(const _qstr& Num = "");
+	_NORETURN void formatDisplaying(const _qstr& Num = "") noexcept;
 
 	// 清理数字中的逗号
 	_NODISCARD _qstr clearCommas(const _qstr& Str) const noexcept;
 
 	// 高级操作符直接显示答案
-	void showAdvancedOperInfo(const ClickEvent& Event);
+	_NORETURN void showAdvancedOperInfo(const ClickEvent& Event);
 
 	// 获取一个高级操作符表达式
 	_NODISCARD _qstr getAdvancedStr(const _qstr& Event, const _qstr& keyNum) const noexcept;
 
 	// 配合高级操作符，更新显示文本。定义：true-更新成功；false--更新失败
-	_NODISCARD bool updataZhongZhuiStr(void);
+	_NODISCARD bool updataZhongZhuiStr(void) noexcept;
 
 	// 寻找最右边的、完整的括号表达式
-	_NODISCARD BKPosition findBracketStr(const BKPosition&);
+	_NODISCARD BKPosition findBracketStr(const BKPosition&) noexcept;
 
 	// 记录数据、清除数据
-	void		   takeData(_qstr&& Data, const BtnType& _Type, bool ClearData = false);
-	void		   takeData(_qstr& Data, const BtnType& _Type, bool ClearData = true);
-	_NORETURN void clear(const ClearSign& _Sign);
-	_NORETURN void clearLastAdvancedStr(void);
+	_NORETURN void takeData(_qstr&& Data, const BtnType& _Type, bool ClearData = false);
+	_NORETURN void takeData(_qstr& Data, const BtnType& _Type, bool ClearData = true);
+	_NORETURN void clear(const ClearSign& _Sign) noexcept;
+	_NORETURN void clearLastAdvancedStr(void) noexcept;
 
 	// 防止重复记录。定义：true--可以记录，继续；flase--重复记录，跳过
 	_NODISCARD bool dontDuplicateRecord(const ClickEvent& Event) const noexcept;
 
 	// line2 只能显示数字
-	_NORETURN void setLine2Displaying(void);
+	_NORETURN void setLine2Displaying(void) noexcept;
 
 	// 预处理
 	_NORETURN void thePreprocessing(const ClickEvent& Event) noexcept;
